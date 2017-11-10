@@ -1,5 +1,4 @@
-![image](https://user-images.githubusercontent.com/3657707/32663960-1215dde8-c630-11e7-8abd-592e1adfe6a4.png
-)
+![current design](https://user-images.githubusercontent.com/3657707/32664167-b5d29ac0-c630-11e7-8333-a6003ea9d22a.png)
 
 # Based on a react-sinatra-boilerplate 
 This is a boilerplate for a basic React project. It has a Sinatra backend, so
