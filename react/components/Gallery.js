@@ -236,10 +236,6 @@ class App extends Component {
 
     return(
       <div>
-        <div className='header'>
-          MOSTLYCOLORED
-        </div>
-
         <div className='gallery-creator-container'>
           <GalleryCreator updategalleries={this.updategalleries} />
         </div>

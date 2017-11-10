@@ -68,6 +68,14 @@
 
 	_reactDom2.default.render(_react2.default.createElement(_Gallery2.default, null), document.getElementById('app'));
 
+	(0, _jquery2.default)(function () {
+	  (0, _jquery2.default)(document).click(function () {
+	    var color = getRandomColor();
+	    var value = '-1px 0 ' + color + ', 0 1px ' + color + ', 1px 0 ' + color + ', 0 -1px ' + color;
+	    (0, _jquery2.default)('.first-letter').css('text-shadow', value);
+	  });
+	});
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -30353,11 +30361,6 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'header' },
-	          'MOSTLYCOLORED'
-	        ),
-	        _react2.default.createElement(
-	          'div',
 	          { className: 'gallery-creator-container' },
 	          _react2.default.createElement(GalleryCreator, { updategalleries: this.updategalleries })
 	        ),
@@ -30403,7 +30406,7 @@
 	'use strict';
 
 	window.getRandomColor = function () {
-	  var CSS_COLORS = ['red', 'yellow', 'green', '#ff00a3', '#ff00d2', '#ff00f6', '#de00ff', '#b400ff', '#8a00ff', '#4e00ff', '#007dff', '#00b8ff'];
+	  var CSS_COLORS = ['yellow', '#ff00a3', '#ff00d2', '#ff00f6', '#de00ff', '#b400ff', '#8a00ff', '#4e00ff', '#007dff', '#00b8ff'];
 	  var random_color = CSS_COLORS[Math.floor(Math.random() * CSS_COLORS.length)];
 	  return random_color;
 	};

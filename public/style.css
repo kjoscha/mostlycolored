@@ -3,17 +3,21 @@ body {
   color: gray;
 }
 
-.header {
-  font-family: "Arial Black", Gadget, sans-serif;  
+
+#header {
+  text-align: center;  
+}
+
+#header span {
+  font-family: "Arial Black", Gadget, sans-serif !important;
   font-size: 8vw;
-  text-align: center;
   color: black;
   text-shadow: -1px 0 darkslategrey, 0 1px darkslategrey, 1px 0 darkslategrey, 0 -1px darkslategrey;
 }
 
-.header:first-letter {
+#header .first-letter {
   text-shadow: -1px 0 purple, 0 1px purple, 1px 0 purple, 0 -1px purple;
-} 
+}
 
 input {
   background-color: black;
