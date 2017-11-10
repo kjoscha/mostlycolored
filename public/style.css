@@ -1,0 +1,95 @@
+body {
+  background: black;
+  color: gray;
+}
+
+.header {
+  font-family: "Arial Black", Gadget, sans-serif;  
+  font-size: 8vw;
+  text-align: center;
+  color: black;
+  text-shadow: -1px 0 darkslategrey, 0 1px darkslategrey, 1px 0 darkslategrey, 0 -1px darkslategrey;
+}
+
+.header:first-letter {
+  text-shadow: -1px 0 purple, 0 1px purple, 1px 0 purple, 0 -1px purple;
+} 
+
+input {
+  background-color: black;
+  outline: none;
+  margin: 5px;
+  border: 1px solid grey;
+  border-radius: 4px;
+  color: gray;
+}
+
+input[type=text] {
+  height: 30px;
+}
+
+input[type=submit] {
+  height: 33px;
+}
+
+* {
+  font-family: "Courier New", Courier, monospace
+}
+
+.dropzone-container {
+  padding: 20px;
+}
+
+.filepicker {
+  background: black !important;
+  border-width: 1px !important;
+}
+
+.dz-preview, .dz-processing, .dz-success, .dz-complete, .dz-image-preview {
+  background: none !important;
+}
+
+.dropzone .dz-preview .dz-image {
+  width: 80px;
+  height: 80px;
+}
+
+.gallery-creator-container {
+  padding: 20px;
+}
+
+.gallery-link-container {
+  padding: 20px;
+  overflow: auto;
+}
+
+.gallery-link {
+  border: 1px solid black;  
+  float: left;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 4px; 
+}
+
+.gallery-link.active {
+  border: 1px solid gray;
+  border-style: 1px solidy gray;
+}
+ 
+.gallery-creator {
+  text-align: center;
+}
+
+.gallery-container {
+  clear: both;
+  padding: 20px;
+}
+
+.gallery > img {
+  cursor: pointer;
+  margin-left: 2px;
+  margin-right: 3px;
+  -webkit-transition-duration: 0.3s; /* Safari */
+  transition-duration: 0.3s;
+  border-radius: 4px;
+}

@@ -1,0 +1,12 @@
+!!!
+%html
+  %body
+    %meta{:charset => "utf-8"}
+    %title Your Title Here
+    %link{:href => "style.css", :rel => "stylesheet", :type => "text/css"}
+    #app
+
+:javascript
+  window.galleries = #{@galleries}
+
+%script{src: 'bundle.js'}
