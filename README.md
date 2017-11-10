@@ -1,4 +1,6 @@
-# Getting Started
+![current design](https://user-images.githubusercontent.com/3657707/32664167-b5d29ac0-c630-11e7-8333-a6003ea9d22a.png)
+
+# Based on a react-sinatra-boilerplate 
 This is a boilerplate for a basic React project. It has a Sinatra backend, so
 the Sinatra server will be serving your React code up to the browser.
 
