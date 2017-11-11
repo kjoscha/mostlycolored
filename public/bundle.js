@@ -68,14 +68,6 @@
 
 	_reactDom2.default.render(_react2.default.createElement(_Gallery2.default, null), document.getElementById('app'));
 
-	(0, _jquery2.default)(function () {
-	  (0, _jquery2.default)(document).click(function () {
-	    var color = getRandomColor();
-	    var value = '-1px 0 ' + color + ', 0 1px ' + color + ', 1px 0 ' + color + ', 0 -1px ' + color;
-	    (0, _jquery2.default)('.first-letter').css('text-shadow', value);
-	  });
-	});
-
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -30182,43 +30174,62 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'span',
-	        {
-	          style: { color: getRandomColor() }, className: 'gallery-link ' + (this.props.active ? 'active' : ''),
-	          onClick: this.handleClick.bind(this, this.props.gallery) },
-	        this.props.gallery[0]
-	      );
+	      if (this.props.gallery[1] == 'locked') {
+	        return _react2.default.createElement(
+	          'span',
+	          { className: 'gallery-link locked' },
+	          this.props.gallery[0]
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'span',
+	          {
+	            style: { color: this.props.color }, className: 'gallery-link ' + (this.props.active ? 'active' : ''),
+	            onClick: this.handleClick.bind(this, this.props.gallery) },
+	          this.props.gallery[0]
+	        );
+	      };
 	    }
 	  }]);
 
 	  return GalleryLink;
 	}(_react.Component);
 
-	var GalleryCreator = function (_Component4) {
-	  _inherits(GalleryCreator, _Component4);
+	var GalleryForm = function (_Component4) {
+	  _inherits(GalleryForm, _Component4);
 
-	  function GalleryCreator(props) {
-	    _classCallCheck(this, GalleryCreator);
+	  function GalleryForm(props) {
+	    _classCallCheck(this, GalleryForm);
 
-	    var _this5 = _possibleConstructorReturn(this, (GalleryCreator.__proto__ || Object.getPrototypeOf(GalleryCreator)).call(this, props));
+	    var _this5 = _possibleConstructorReturn(this, (GalleryForm.__proto__ || Object.getPrototypeOf(GalleryForm)).call(this, props));
 
-	    _this5.state = { name: '' };
+	    _this5.state = {
+	      name: '',
+	      password: ''
+	    };
 
-	    _this5.handleChange = _this5.handleChange.bind(_this5);
+	    _this5.handlePasswordChange = _this5.handlePasswordChange.bind(_this5);
+	    _this5.handleNameChange = _this5.handleNameChange.bind(_this5);
 	    _this5.handleSubmit = _this5.handleSubmit.bind(_this5);
 	    return _this5;
 	  }
 
-	  _createClass(GalleryCreator, [{
-	    key: 'handleChange',
-	    value: function handleChange(e) {
+	  _createClass(GalleryForm, [{
+	    key: 'handleNameChange',
+	    value: function handleNameChange(e) {
 	      this.setState({ name: e.target.value });
+	    }
+	  }, {
+	    key: 'handlePasswordChange',
+	    value: function handlePasswordChange(e) {
+	      this.setState({ password: e.target.value });
+	      this.props.getGalleries(e.target.value, false);
 	    }
 	  }, {
 	    key: 'handleSubmit',
 	    value: function handleSubmit(e) {
 	      e.preventDefault();
+
 	      var thisComponent = this; // since 'this' gets overwritten by ajax function
 	      jQuery.ajax({
 	        url: 'create_gallery',
@@ -30226,7 +30237,7 @@
 	        dataType: 'json',
 	        method: 'POST',
 	        success: function success(data) {
-	          thisComponent.props.updategalleries(data);
+	          thisComponent.props.updategalleries(data, true);
 	        },
 	        error: function error(data) {
 	          console.log('ERROR! ' + data);
@@ -30239,13 +30250,14 @@
 	      return _react2.default.createElement(
 	        'form',
 	        { className: 'gallery-creator', onSubmit: this.handleSubmit },
-	        _react2.default.createElement('input', { type: 'text', name: 'name', onChange: this.handleChange.bind(this) }),
+	        _react2.default.createElement('input', { type: 'text', name: 'name', placeholder: 'Name', onChange: this.handleNameChange.bind(this) }),
+	        _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password', onChange: this.handlePasswordChange.bind(this) }),
 	        _react2.default.createElement('input', { type: 'submit', value: 'Create gallery' })
 	      );
 	    }
 	  }]);
 
-	  return GalleryCreator;
+	  return GalleryForm;
 	}(_react.Component);
 
 	var App = function (_Component5) {
@@ -30262,22 +30274,26 @@
 	      uploadFolder: null,
 	      uploading: false
 	    };
-	    _this6.activategallery = _this6.activategallery.bind(_this6);
+	    _this6.activateGallery = _this6.activateGallery.bind(_this6);
 	    _this6.updategalleries = _this6.updategalleries.bind(_this6);
+	    _this6.getGalleries = _this6.getGalleries.bind(_this6);
+	    _this6.linkColor = _this6.linkColor.bind(_this6);
 	    return _this6;
 	  }
 
 	  _createClass(App, [{
-	    key: 'activategallery',
-	    value: function activategallery(gallery) {
+	    key: 'activateGallery',
+	    value: function activateGallery(gallery) {
 	      this.setState({ activegallery: gallery });
 	    }
 	  }, {
 	    key: 'updategalleries',
-	    value: function updategalleries(galleries) {
+	    value: function updategalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
-	      var latestChangedgallery = galleries.slice(-1)[0];
-	      this.setState({ activegallery: latestChangedgallery });
+	      var latestChangedGallery = galleries.slice(-1)[0];
+	      if (changeToLatest && latestChangedGallery[1] != 'locked') {
+	        this.setState({ activegallery: latestChangedGallery });
+	      };
 	    }
 	  }, {
 	    key: 'currentgalleryImages',
@@ -30287,10 +30303,15 @@
 	      }
 	    }
 	  }, {
+	    key: 'linkColor',
+	    value: function linkColor(index) {
+	      return window.randomColors[index];
+	    }
+	  }, {
 	    key: 'dropItems',
 	    value: function dropItems() {
 	      // set upload folder to current gallery if this drop starts a new queue.
-	      // otherwise keep the folder set at queue start
+	      // otherwise keep the folder which was set at queue start
 	      if (!this.state.uploading) {
 	        this.setState({ uploadFolder: this.state.activegallery ? this.state.activegallery[0] : 'New_' + Math.random().toString(36).substring(7)
 	        });
@@ -30301,13 +30322,19 @@
 	    key: 'finishUpload',
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
-	      var thisComponent = this; // since 'this' gets overwritten by ajax function    
+	      this.getGalleries('', true);
+	    }
+	  }, {
+	    key: 'getGalleries',
+	    value: function getGalleries(password, changeToLatest) {
+	      var thisComponent = this; // since 'this' gets overwritten by ajax function
 	      jQuery.ajax({
-	        url: 'galleries',
+	        url: 'get_galleries',
+	        data: { password: password },
 	        dataType: 'json',
 	        method: 'GET',
-	        success: function success(galleries) {
-	          thisComponent.updategalleries(galleries);
+	        success: function success(data) {
+	          thisComponent.updategalleries(data, changeToLatest);
 	        },
 	        error: function error(data) {
 	          console.log('ERROR! ' + data);
@@ -30320,17 +30347,23 @@
 	      var _this7 = this;
 
 	      var galleryLinks = this.state.galleries.map(function (gallery, index) {
-	        return _react2.default.createElement(GalleryLink, {
-	          key: index,
+	        return _react2.default.createElement(GalleryLink, { locked: false, key: gallery[0],
 	          gallery: gallery,
-	          onClick: _this7.activategallery,
-	          active: _this7.state.activegallery !== null && gallery[0] == _this7.state.activegallery[0]
+	          onClick: _this7.activateGallery,
+	          active: _this7.state.activegallery !== null && gallery[0] == _this7.state.activegallery[0],
+	          color: _this7.linkColor(index)
 	        });
 	      });
 
 	      var gallery = null;
 	      if (this.state.activegallery != null) {
 	        gallery = _react2.default.createElement(Gallery, { images: this.currentgalleryImages() });
+	      } else {
+	        gallery = _react2.default.createElement(
+	          'div',
+	          { className: 'choose' },
+	          _react2.default.createElement('img', { src: 'choose.png' })
+	        );
 	      };
 
 	      var dropzoneComponentConfig = {
@@ -30361,8 +30394,11 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'gallery-creator-container' },
-	          _react2.default.createElement(GalleryCreator, { updategalleries: this.updategalleries })
+	          { className: 'form-container' },
+	          _react2.default.createElement(GalleryForm, {
+	            updategalleries: this.updategalleries,
+	            getGalleries: this.getGalleries
+	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -30401,15 +30437,43 @@
 
 /***/ }),
 /* 161 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	window.getRandomColor = function () {
-	  var CSS_COLORS = ['yellow', '#ff00a3', '#ff00d2', '#ff00f6', '#de00ff', '#b400ff', '#8a00ff', '#4e00ff', '#007dff', '#00b8ff'];
+	var _jquery = __webpack_require__(1);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	window.jQuery = _jquery2.default;
+
+	var getRandomColor = function getRandomColor() {
+	  var CSS_COLORS = ['#ff0', '#ff00a3', '#ff00d2', '#ff00f6', '#de00ff', '#b400ff', '#8a00ff', '#4e00ff', '#007dff', '#00b8ff'];
 	  var random_color = CSS_COLORS[Math.floor(Math.random() * CSS_COLORS.length)];
 	  return random_color;
 	};
+
+	(0, _jquery2.default)(function () {
+	  (0, _jquery2.default)(document).click(function () {
+	    var color = getRandomColor();
+	    var value = '-1px 0 ' + color + ', 0 1px ' + color + ', 1px 0 ' + color + ', 0 -1px ' + color;
+	    (0, _jquery2.default)('.first-letter').css('text-shadow', value);
+	  });
+	});
+
+	var getRandomColors = function getRandomColors(number) {
+	  var colors = [];
+	  for (var i = 0; i < number; i++) {
+	    colors[i] = getRandomColor();
+	  };
+	  return colors;
+	};
+
+	// could use the real gallery count as argument,
+	// but too much overhead for few milliseconds
+	window.randomColors = getRandomColors(1000);
 
 /***/ }),
 /* 162 */

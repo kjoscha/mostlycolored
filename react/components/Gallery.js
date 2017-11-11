@@ -1,4 +1,4 @@
-import '../random_color_generator';
+import '../random_colors';
 import 'node_modules/react-dropzone-component/styles/filepicker.css';
 import 'node_modules/dropzone/dist/min/dropzone.min.css';
 import React, { Component } from 'react';
@@ -88,33 +88,47 @@ class GalleryLink extends Component {
   }
 
   render() {
-    return(
-      <span
-        style={{color: getRandomColor()}} className={'gallery-link ' + (this.props.active ? 'active' : '')}
+    if (this.props.gallery[1] == 'locked') {
+      return <span className={'gallery-link locked'}>
+        {this.props.gallery[0]}
+      </span>
+    } else {
+      return <span
+        style={{color: this.props.color}} className={'gallery-link ' + (this.props.active ? 'active' : '')}
         onClick={this.handleClick.bind(this, this.props.gallery)}>
         {this.props.gallery[0]}
       </span>
-    )
+    };
   }
 }
 
 
 
-class GalleryCreator extends Component {
+class GalleryForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { name: '' };
+    this.state = {
+      name: '',
+      password: '',
+    };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);    
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(e) {
+  handleNameChange(e) {
     this.setState({ name: e.target.value });
+  }
+
+  handlePasswordChange(e) {
+    this.setState({ password: e.target.value });
+    this.props.getGalleries(e.target.value, false);    
   }
 
   handleSubmit(e) {
     e.preventDefault();
+
     var thisComponent = this; // since 'this' gets overwritten by ajax function
     jQuery.ajax({
       url: 'create_gallery',
@@ -122,7 +136,7 @@ class GalleryCreator extends Component {
       dataType: 'json',
       method: 'POST',
       success: function(data) {
-        thisComponent.props.updategalleries(data)
+        thisComponent.props.updategalleries(data, true)
       },
       error: function(data) {
         console.log('ERROR! ' + data);
@@ -133,7 +147,8 @@ class GalleryCreator extends Component {
   render() {
     return(
       <form className='gallery-creator' onSubmit={this.handleSubmit}>
-        <input type="text" name="name" onChange={this.handleChange.bind(this)} />
+        <input type="text" name="name" placeholder="Name" onChange={this.handleNameChange.bind(this)} />
+        <input type="text" name="password" placeholder="Password" onChange={this.handlePasswordChange.bind(this)} /> 
         <input type="submit" value="Create gallery" />
       </form>
     )
@@ -151,18 +166,22 @@ class App extends Component {
       uploadFolder: null,
       uploading: false,
     }
-    this.activategallery = this.activategallery.bind(this);
-    this.updategalleries = this.updategalleries.bind(this);  
+    this.activateGallery = this.activateGallery.bind(this);
+    this.updategalleries = this.updategalleries.bind(this);
+    this.getGalleries = this.getGalleries.bind(this);
+    this.linkColor = this.linkColor.bind(this);
   }
 
-  activategallery(gallery) {
+  activateGallery(gallery) {
     this.setState({ activegallery: gallery })
   }
 
-  updategalleries(galleries) {
+  updategalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
-    const latestChangedgallery = galleries.slice(-1)[0];
-    this.setState({ activegallery: latestChangedgallery });  
+    const latestChangedGallery = galleries.slice(-1)[0];
+    if (changeToLatest && latestChangedGallery[1] != 'locked') {
+      this.setState({ activegallery: latestChangedGallery });  
+    };
   }
 
   currentgalleryImages() {
@@ -171,9 +190,13 @@ class App extends Component {
     }
   }
 
+  linkColor(index) {
+    return window.randomColors[index];
+  }
+
   dropItems() {
     // set upload folder to current gallery if this drop starts a new queue.
-    // otherwise keep the folder set at queue start
+    // otherwise keep the folder which was set at queue start
     if (!this.state.uploading) {
       this.setState({ uploadFolder:
         this.state.activegallery ?
@@ -186,13 +209,18 @@ class App extends Component {
 
   finishUpload() {
     this.setState({ uploading: false });    
-    var thisComponent = this; // since 'this' gets overwritten by ajax function    
+    this.getGalleries('', true);
+  }
+
+  getGalleries(password, changeToLatest) {
+    var thisComponent = this; // since 'this' gets overwritten by ajax function
     jQuery.ajax({
-      url: 'galleries',
-      dataType: 'json',      
+      url: 'get_galleries',
+      data: { password: password },
+      dataType: 'json',
       method: 'GET',
-      success: function(galleries) {
-        thisComponent.updategalleries(galleries);     
+      success: function(data) {
+        thisComponent.updategalleries(data, changeToLatest)
       },
       error: function(data) {
         console.log('ERROR! ' + data);
@@ -202,17 +230,19 @@ class App extends Component {
 
   render() {
     const galleryLinks = this.state.galleries.map((gallery, index) =>
-      <GalleryLink
-        key={index}
+      <GalleryLink locked={false} key={gallery[0]}
         gallery={gallery}
-        onClick={this.activategallery}
+        onClick={this.activateGallery}
         active={(this.state.activegallery !== null) && (gallery[0] == this.state.activegallery[0])}
+        color={this.linkColor(index)}
       />
     );
     
     let gallery = null;
     if (this.state.activegallery != null) {
       gallery = <Gallery images={this.currentgalleryImages()} />
+    } else {
+      gallery = <div className='choose'><img src='choose.png' /></div>      
     };
     
     let dropzoneComponentConfig = {
@@ -236,8 +266,11 @@ class App extends Component {
 
     return(
       <div>
-        <div className='gallery-creator-container'>
-          <GalleryCreator updategalleries={this.updategalleries} />
+        <div className='form-container'>
+          <GalleryForm
+            updategalleries={this.updategalleries}
+            getGalleries={this.getGalleries}
+          />
         </div>
 
         <div className='gallery-link-container'>
