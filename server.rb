@@ -7,12 +7,16 @@ use Rack::Auth::Basic, "Restricted Area" do |username, password|
 end
 
 get '/' do
-  @galleries = gallery_dir
+  @galleries = galleries
   haml :index
 end
 
 get '/galleries' do
-  halt 200, gallery_dir.to_json
+  halt 200, galleries.to_json
+end
+
+get '/get_galleries' do
+  halt 200, galleries(params[:password]).to_json
 end
 
 post '/save_image' do
@@ -20,41 +24,65 @@ post '/save_image' do
   file = params[:file][:tempfile]
   folder = params[:folder]
 
+  validate_file(file)
+  make_dir_if_not_exists(folder)
+  save_and_resize(folder, file, filename)
+
+  status 200
+end
+
+post '/create_gallery' do
+  password = params[:password]
+  name = params[:name]
+  password == '' ? folder = name : folder = "#{name}___#{password}"
+  Dir.mkdir("./public/images/#{folder}")
+  halt 200, galleries(params[:password]).to_json
+end
+
+private
+
+def make_dir_if_not_exists(folder)
+  unless Dir.exist?("./public/images/#{folder}")
+    Dir.mkdir("./public/images/#{folder}")
+  end
+end
+
+def validate_file(file)
   accepted_formats = ['.jpg', '.jpeg', '.JPG', '.png', '.PNG', '.gif']
   unless file.size < 8_000_000 && accepted_formats.include?(File.extname(file))
     return status 415
   end
+end
 
-  unless Dir.exist?("./public/images/#{folder}")
-    Dir.mkdir("./public/images/#{folder}")
-  end
-
+def save_and_resize(folder, file, filename)
   path = "./public/images/#{folder}/#{filename}"
-
+  
   File.open(path, 'wb') do |f|
     f.write(file.read)
   end
 
   image = MiniMagick::Image.new(path)
   image.resize '1600x1600'
-
-  status 200
 end
 
-post '/create_gallery' do
-  name = params[:name]
-  Dir.mkdir("./public/images/#{name}")
-  halt 200, gallery_dir.to_json
-end
-
-private
-
-def gallery_dir
+def galleries(password = '')
   Dir['public/images/*'].map do |dir|
     folder = dir.gsub('public/images/', '')
-    images = Dir.glob("#{dir}/*").map { |image| image.gsub('public/', '') }
-    last_changed_at = File.ctime(dir).to_s
 
-    [folder, images, last_changed_at]
-  end.sort_by {|obj| obj[2]}
+    if visible?(dir, password)
+      images = Dir.glob("#{dir}/*").map { |image| image.gsub('public/', '') }
+    else
+      images = 'locked'
+    end
+
+    name = folder.split('___')[0]
+    last_changed_at = File.ctime(dir).to_s
+    [name, images, last_changed_at]
+  end.compact.sort_by {|obj| obj[2]}
+end
+
+def visible?(dir, password)
+  # galleries are hidden when '___' appears in name
+  # Right part of the name is the search string to unlock
+  !dir.include?('___') || password == dir.split('___')[1]
 end
