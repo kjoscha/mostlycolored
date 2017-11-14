@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'json'
 require 'mini_magick'
+require 'byebug'
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
   [username, password] == ['admin', 'admin']  
@@ -35,7 +36,7 @@ post '/create_gallery' do
   password = params[:password]
   name = params[:name]
   password == '' ? folder = name : folder = "#{name}___#{password}"
-  Dir.mkdir("./public/images/#{folder}")
+  make_dir_if_not_exists(folder)
   halt 200, galleries(params[:password]).to_json
 end
 
@@ -44,6 +45,7 @@ private
 def make_dir_if_not_exists(folder)
   unless Dir.exist?("./public/images/#{folder}")
     Dir.mkdir("./public/images/#{folder}")
+    Dir.mkdir("./public/images/#{folder}/thumbnails")    
   end
 end
 
@@ -57,9 +59,11 @@ end
 def save_and_resize(folder, file, filename)
   path = "./public/images/#{folder}/#{filename}"
   
-  File.open(path, 'wb') do |f|
-    f.write(file.read)
-  end
+  File.open(path, 'wb') { |f| f.write(file.read) }
+
+  thumbnail = MiniMagick::Image.open(path)
+  thumbnail.resize '200x200'
+  thumbnail.write "./public/images/#{folder}/thumbnails/#{filename}"
 
   image = MiniMagick::Image.new(path)
   image.resize '1600x1600'
@@ -68,16 +72,17 @@ end
 def galleries(password = '')
   Dir['public/images/*'].map do |dir|
     folder = dir.gsub('public/images/', '')
-
     if visible?(dir, password)
-      images = Dir.glob("#{dir}/*").map { |image| image.gsub('public/', '') }
+      full_images = Dir.glob("#{dir}/*").map { |image| image.gsub('public/', '') unless image.include?('thumbnails') }.compact.sort
+      thumbnails = Dir.glob("#{dir}/thumbnails/*").map{ |image| image.gsub('public/', '') }.sort
+      images = full_images.zip(thumbnails)
     else
       images = 'locked'
     end
 
     name = folder.split('___')[0]
     last_changed_at = File.ctime(dir).to_s
-    [name, images, last_changed_at]
+    [name, images, last_changed_at, folder]
   end.compact.sort_by {|obj| obj[2]}
 end
 

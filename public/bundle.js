@@ -30138,9 +30138,9 @@
 	    value: function render() {
 	      var _this3 = this;
 
-	      var images = this.props.images.map(function (url, index) {
+	      var images = this.props.images.map(function (image, index) {
 	        return _react2.default.createElement(Image, {
-	          key: index, url: url,
+	          key: index, url: image[1],
 	          index: index,
 	          active: index == _this3.state.activeImageIndex,
 	          onClick: _this3.activateImage
@@ -30290,7 +30290,7 @@
 	    key: 'updategalleries',
 	    value: function updategalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
-	      var latestChangedGallery = galleries.slice(-1)[0];
+	      var latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
 	      if (changeToLatest && latestChangedGallery[1] != 'locked') {
 	        this.setState({ activegallery: latestChangedGallery });
 	      };
@@ -30313,7 +30313,7 @@
 	      // set upload folder to current gallery if this drop starts a new queue.
 	      // otherwise keep the folder which was set at queue start
 	      if (!this.state.uploading) {
-	        this.setState({ uploadFolder: this.state.activegallery ? this.state.activegallery[0] : 'New_' + Math.random().toString(36).substring(7)
+	        this.setState({ uploadFolder: this.state.activegallery ? this.state.activegallery[3] : 'New_' + Math.random().toString(36).substring(7)
 	        });
 	      };
 	      this.setState({ uploading: true });
@@ -30322,7 +30322,7 @@
 	    key: 'finishUpload',
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
-	      this.getGalleries('', true);
+	      this.getGalleries(jQuery('input[name=password]').val(), true);
 	    }
 	  }, {
 	    key: 'getGalleries',

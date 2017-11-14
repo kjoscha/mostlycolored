@@ -59,10 +59,10 @@ class Gallery extends Component {
     this.setState({ activeImageIndex: newIndex })
   }
 
-  render() {
-    const images = this.props.images.map((url, index) =>
+  render() {    
+    const images = this.props.images.map((image, index) =>
       <Image
-        key={index} url={url}
+        key={index} url={image[1]}
         index={index}
         active={index == this.state.activeImageIndex}
         onClick={this.activateImage}
@@ -178,7 +178,7 @@ class App extends Component {
 
   updategalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
-    const latestChangedGallery = galleries.slice(-1)[0];
+    const latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
     if (changeToLatest && latestChangedGallery[1] != 'locked') {
       this.setState({ activegallery: latestChangedGallery });  
     };
@@ -200,16 +200,16 @@ class App extends Component {
     if (!this.state.uploading) {
       this.setState({ uploadFolder:
         this.state.activegallery ?
-          this.state.activegallery[0] :
+          this.state.activegallery[3] :
           'New_' + Math.random().toString(36).substring(7)
       });
-    };
+    };    
     this.setState({ uploading: true });    
   }
 
   finishUpload() {
-    this.setState({ uploading: false });    
-    this.getGalleries('', true);
+    this.setState({ uploading: false });
+    this.getGalleries(jQuery('input[name=password]').val(), true);
   }
 
   getGalleries(password, changeToLatest) {

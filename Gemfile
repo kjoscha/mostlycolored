@@ -5,6 +5,7 @@ gem 'sinatra-activerecord'
 gem 'haml'
 gem 'json'
 gem 'mini_magick'
+gem 'byebug'
 
 group :development, :test do
   gem 'pry'
