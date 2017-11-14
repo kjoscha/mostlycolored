@@ -30217,14 +30217,14 @@
 	    value: function handleSubmit(e) {
 	      e.preventDefault();
 
-	      var thisComponent = this; // since 'this' gets overwritten by ajax function
+	      var thisComponent = this;
 	      jQuery.ajax({
 	        url: 'create_gallery',
 	        data: this.state,
 	        dataType: 'json',
 	        method: 'POST',
 	        success: function success(data) {
-	          thisComponent.props.updategalleries(data, true);
+	          thisComponent.props.updateGalleries(data, true);
 	        },
 	        error: function error(data) {
 	          console.log('ERROR! ' + data);
@@ -30257,12 +30257,12 @@
 
 	    _this6.state = {
 	      galleries: window.galleries, // first element [0] is name/folder, second [1] contains image paths
-	      activegallery: null,
+	      activeGallery: null,
 	      uploadFolder: null,
 	      uploading: false
 	    };
 	    _this6.activateGallery = _this6.activateGallery.bind(_this6);
-	    _this6.updategalleries = _this6.updategalleries.bind(_this6);
+	    _this6.updateGalleries = _this6.updateGalleries.bind(_this6);
 	    _this6.getGalleries = _this6.getGalleries.bind(_this6);
 	    _this6.linkColor = _this6.linkColor.bind(_this6);
 	    return _this6;
@@ -30271,22 +30271,22 @@
 	  _createClass(App, [{
 	    key: 'activateGallery',
 	    value: function activateGallery(gallery) {
-	      this.setState({ activegallery: gallery });
+	      this.setState({ activeGallery: gallery });
 	    }
 	  }, {
-	    key: 'updategalleries',
-	    value: function updategalleries(galleries, changeToLatest) {
+	    key: 'updateGalleries',
+	    value: function updateGalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
 	      var latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
 	      if (changeToLatest && latestChangedGallery[1] != 'locked') {
-	        this.setState({ activegallery: latestChangedGallery });
+	        this.setState({ activeGallery: latestChangedGallery });
 	      };
 	    }
 	  }, {
 	    key: 'currentgalleryImages',
 	    value: function currentgalleryImages() {
-	      if (this.state.activegallery !== null) {
-	        return this.state.activegallery[1];
+	      if (this.state.activeGallery !== null) {
+	        return this.state.activeGallery[1];
 	      }
 	    }
 	  }, {
@@ -30300,7 +30300,7 @@
 	      // set upload folder to current gallery if this drop starts a new queue.
 	      // otherwise keep the folder which was set at queue start
 	      if (!this.state.uploading) {
-	        this.setState({ uploadFolder: this.state.activegallery ? this.state.activegallery[3] : 'New_' + Math.random().toString(36).substring(7)
+	        this.setState({ uploadFolder: this.state.activeGallery ? this.state.activeGallery[3] : 'New_' + Math.random().toString(36).substring(7)
 	        });
 	      };
 	      this.setState({ uploading: true });
@@ -30310,18 +30310,30 @@
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
 	      this.getGalleries(jQuery('input[name=password]').val(), true);
+	      this.createZip();
+	    }
+	  }, {
+	    key: 'createZip',
+	    value: function createZip() {
+	      var thisComponent = this;
+	      jQuery.ajax({
+	        url: 'create_zip',
+	        data: { folder: this.state.activeGallery[3] },
+	        dataType: 'json',
+	        method: 'POST'
+	      });
 	    }
 	  }, {
 	    key: 'getGalleries',
 	    value: function getGalleries(password, changeToLatest) {
-	      var thisComponent = this; // since 'this' gets overwritten by ajax function
+	      var thisComponent = this;
 	      jQuery.ajax({
 	        url: 'get_galleries',
 	        data: { password: password },
 	        dataType: 'json',
 	        method: 'GET',
 	        success: function success(data) {
-	          thisComponent.updategalleries(data, changeToLatest);
+	          thisComponent.updateGalleries(data, changeToLatest);
 	        },
 	        error: function error(data) {
 	          console.log('ERROR! ' + data);
@@ -30337,13 +30349,13 @@
 	        return _react2.default.createElement(GalleryLink, { locked: false, key: gallery[0],
 	          gallery: gallery,
 	          onClick: _this7.activateGallery,
-	          active: _this7.state.activegallery !== null && gallery[0] == _this7.state.activegallery[0],
+	          active: _this7.state.activeGallery !== null && gallery[0] == _this7.state.activeGallery[0],
 	          color: _this7.linkColor(index)
 	        });
 	      });
 
 	      var gallery = null;
-	      if (this.state.activegallery != null) {
+	      if (this.state.activeGallery != null) {
 	        gallery = _react2.default.createElement(Gallery, { images: this.currentgalleryImages() });
 	      } else {
 	        gallery = _react2.default.createElement(
@@ -30383,7 +30395,7 @@
 	          'div',
 	          { className: 'form-container' },
 	          _react2.default.createElement(GalleryForm, {
-	            updategalleries: this.updategalleries,
+	            updateGalleries: this.updateGalleries,
 	            getGalleries: this.getGalleries
 	          })
 	        ),

@@ -117,14 +117,14 @@ class GalleryForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    var thisComponent = this; // since 'this' gets overwritten by ajax function
+    var thisComponent = this;
     jQuery.ajax({
       url: 'create_gallery',
       data: this.state,
       dataType: 'json',
       method: 'POST',
       success: function(data) {
-        thisComponent.props.updategalleries(data, true)
+        thisComponent.props.updateGalleries(data, true)
       },
       error: function(data) {
         console.log('ERROR! ' + data);
@@ -150,31 +150,31 @@ class App extends Component {
     super(props)
     this.state = {
       galleries: window.galleries, // first element [0] is name/folder, second [1] contains image paths
-      activegallery: null,
+      activeGallery: null,
       uploadFolder: null,
       uploading: false,
     }
     this.activateGallery = this.activateGallery.bind(this);
-    this.updategalleries = this.updategalleries.bind(this);
+    this.updateGalleries = this.updateGalleries.bind(this);
     this.getGalleries = this.getGalleries.bind(this);
     this.linkColor = this.linkColor.bind(this);
   }
 
   activateGallery(gallery) {
-    this.setState({ activegallery: gallery })
+    this.setState({ activeGallery: gallery })
   }
 
-  updategalleries(galleries, changeToLatest) {
+  updateGalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
     const latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
     if (changeToLatest && latestChangedGallery[1] != 'locked') {
-      this.setState({ activegallery: latestChangedGallery });  
+      this.setState({ activeGallery: latestChangedGallery });  
     };
   }
 
   currentgalleryImages() {
-    if (this.state.activegallery !== null) {
-      return this.state.activegallery[1]
+    if (this.state.activeGallery !== null) {
+      return this.state.activeGallery[1]
     }
   }
 
@@ -187,8 +187,8 @@ class App extends Component {
     // otherwise keep the folder which was set at queue start
     if (!this.state.uploading) {
       this.setState({ uploadFolder:
-        this.state.activegallery ?
-          this.state.activegallery[3] :
+        this.state.activeGallery ?
+          this.state.activeGallery[3] :
           'New_' + Math.random().toString(36).substring(7)
       });
     };    
@@ -198,17 +198,28 @@ class App extends Component {
   finishUpload() {
     this.setState({ uploading: false });
     this.getGalleries(jQuery('input[name=password]').val(), true);
+    this.createZip();
+  }
+
+  createZip() {
+    var thisComponent = this;
+    jQuery.ajax({
+      url: 'create_zip',
+      data: { folder: this.state.activeGallery[3] },
+      dataType: 'json',
+      method: 'POST'
+    });
   }
 
   getGalleries(password, changeToLatest) {
-    var thisComponent = this; // since 'this' gets overwritten by ajax function
+    var thisComponent = this;
     jQuery.ajax({
       url: 'get_galleries',
       data: { password: password },
       dataType: 'json',
       method: 'GET',
       success: function(data) {
-        thisComponent.updategalleries(data, changeToLatest)
+        thisComponent.updateGalleries(data, changeToLatest)
       },
       error: function(data) {
         console.log('ERROR! ' + data);
@@ -221,13 +232,13 @@ class App extends Component {
       <GalleryLink locked={false} key={gallery[0]}
         gallery={gallery}
         onClick={this.activateGallery}
-        active={(this.state.activegallery !== null) && (gallery[0] == this.state.activegallery[0])}
+        active={(this.state.activeGallery !== null) && (gallery[0] == this.state.activeGallery[0])}
         color={this.linkColor(index)}
       />
     );
     
     let gallery = null;
-    if (this.state.activegallery != null) {
+    if (this.state.activeGallery != null) {
       gallery = <Gallery images={this.currentgalleryImages()} />
     } else {
       gallery = <div className='choose'><img src='choose.png' /></div>      
@@ -256,7 +267,7 @@ class App extends Component {
       <div>
         <div className='form-container'>
           <GalleryForm
-            updategalleries={this.updategalleries}
+            updateGalleries={this.updateGalleries}
             getGalleries={this.getGalleries}
           />
         </div>

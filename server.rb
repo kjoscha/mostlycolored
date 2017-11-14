@@ -2,7 +2,7 @@ require 'sinatra'
 require 'json'
 require 'mini_magick'
 require 'byebug'
-# require 'fileutils'
+require 'zip'
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
   [username, password] == ['admin', 'admin']  
@@ -39,6 +39,23 @@ post '/create_gallery' do
   password == '' ? folder = name : folder = "#{name}___#{password}"
   make_dir_if_not_exists(folder)
   halt 200, galleries(params[:password]).to_json
+end
+
+post '/create_zip' do
+  folder = params[:folder]  
+  dir = "./public/images/#{folder}"
+  zipfile = "./public/images/#{folder}.zip"
+
+  images = Dir.glob("#{dir}/*").map do |image|
+    image unless image.include?('thumbnails')
+  end.compact
+
+  File.delete(zipfile) if File.exist?(zipfile)
+  Zip::File.open(zipfile, Zip::File::CREATE) do |zipfile|
+    images.each do |image|
+      zipfile.add(File.basename(image), image)
+    end
+  end
 end
 
 private
@@ -88,7 +105,7 @@ end
 def images_in(dir)
   images = []
   Dir.glob("#{dir}/*").each do |image|
-    next if image.include?('thumbnails')
+    next if File.directory?(image)
     filename = File.basename(image)
     full_image = image.gsub('public/', '')
     thumbnail = "#{dir}/thumbnails/#{filename}".gsub('public/', '')
@@ -102,3 +119,4 @@ def visible?(dir, password)
   # Right part of the name is the search string to unlock
   !dir.include?('___') || password == dir.split('___')[1]
 end
+
