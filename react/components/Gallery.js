@@ -194,7 +194,7 @@ class App extends Component {
     return window.randomColors[index];
   }
 
-  dropItems() {
+  addItems() {
     // set upload folder to current gallery if this drop starts a new queue.
     // otherwise keep the folder which was set at queue start
     if (!this.state.uploading) {
@@ -260,7 +260,7 @@ class App extends Component {
     };
     
     let dropzonEventHandlers = {
-      drop: () => this.dropItems(),
+      addedfile: () => this.addItems(),
       queuecomplete: () => this.finishUpload(),
     }
 

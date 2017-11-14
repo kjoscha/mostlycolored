@@ -6,6 +6,7 @@ gem 'haml'
 gem 'json'
 gem 'mini_magick'
 gem 'byebug'
+gem 'fileutils'
 
 group :development, :test do
   gem 'pry'

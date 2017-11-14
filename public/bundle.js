@@ -30308,8 +30308,8 @@
 	      return window.randomColors[index];
 	    }
 	  }, {
-	    key: 'dropItems',
-	    value: function dropItems() {
+	    key: 'addItems',
+	    value: function addItems() {
 	      // set upload folder to current gallery if this drop starts a new queue.
 	      // otherwise keep the folder which was set at queue start
 	      if (!this.state.uploading) {
@@ -30381,8 +30381,8 @@
 	      };
 
 	      var dropzonEventHandlers = {
-	        drop: function drop() {
-	          return _this7.dropItems();
+	        addedfile: function addedfile() {
+	          return _this7.addItems();
 	        },
 	        queuecomplete: function queuecomplete() {
 	          return _this7.finishUpload();

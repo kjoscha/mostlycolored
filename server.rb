@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require 'mini_magick'
 require 'byebug'
+# require 'fileutils'
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
   [username, password] == ['admin', 'admin']  
@@ -73,9 +74,14 @@ def galleries(password = '')
   Dir['public/images/*'].map do |dir|
     folder = dir.gsub('public/images/', '')
     if visible?(dir, password)
-      full_images = Dir.glob("#{dir}/*").map { |image| image.gsub('public/', '') unless image.include?('thumbnails') }.compact.sort
-      thumbnails = Dir.glob("#{dir}/thumbnails/*").map{ |image| image.gsub('public/', '') }.sort
-      images = full_images.zip(thumbnails)
+      images = []
+      Dir.glob("#{dir}/*").each do |image|
+        next if image.include?('thumbnails')
+        filename = File.basename(image)
+        full_image = image.gsub('public/', '')
+        thumbnail = "#{dir}/thumbnails/#{filename}".gsub('public/', '')
+        images << [full_image, thumbnail]
+      end
     else
       images = 'locked'
     end
