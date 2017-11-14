@@ -30310,16 +30310,22 @@
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
 	      this.getGalleries(jQuery('input[name=password]').val(), true);
+	      this.createZip();
 	    }
 	  }, {
 	    key: 'createZip',
 	    value: function createZip() {
 	      var thisComponent = this;
 	      jQuery.ajax({
-	        url: 'create_zip',
+	        url: 'zip',
 	        data: { folder: thisComponent.state.activeGallery[3] },
-	        dataType: 'json',
-	        method: 'POST'
+	        method: 'GET',
+	        success: function success(data) {
+	          window.location = data;
+	        },
+	        error: function error(data) {
+	          console.log('Error!');
+	        }
 	      });
 	    }
 	  }, {
@@ -30333,10 +30339,9 @@
 	        method: 'GET',
 	        success: function success(data) {
 	          thisComponent.updateGalleries(data, changeToLatest);
-	          thisComponent.createZip();
 	        },
 	        error: function error(data) {
-	          console.log('ERROR! ' + data);
+	          console.log('ERROR!');
 	        }
 	      });
 	    }

@@ -4,11 +4,12 @@ require 'mini_magick'
 require 'byebug'
 require 'zip'
 
-use Rack::Auth::Basic, "Restricted Area" do |username, password|
+use Rack::Auth::Basic, 'Remember what has Joscha told you...' do |username, password|
   [username, password] == ['admin', 'admin']  
 end
 
 get '/' do
+  clean_zips(3600)
   @galleries = galleries
   haml :index
 end
@@ -26,11 +27,13 @@ post '/save_image' do
   file = params[:file][:tempfile]
   folder = params[:folder]
 
-  validate_file(file)
-  make_dir_if_not_exists(folder)
-  save_and_resize(folder, file, filename)
-
-  status 200
+  if file_valid?(file)
+    make_dir_if_not_exists(folder)
+    save_and_resize(folder, file, filename)
+    status 200
+  else
+    status 415
+  end
 end
 
 post '/create_gallery' do
@@ -41,7 +44,7 @@ post '/create_gallery' do
   halt 200, galleries(params[:password]).to_json
 end
 
-post '/create_zip' do
+get '/zip' do
   folder = params[:folder]  
   dir = "./public/images/#{folder}"
   zipfile = "./public/images/#{folder}.zip"
@@ -51,11 +54,15 @@ post '/create_zip' do
   end.compact
 
   File.delete(zipfile) if File.exist?(zipfile)
+  
   Zip::File.open(zipfile, Zip::File::CREATE) do |zipfile|
     images.each do |image|
       zipfile.add(File.basename(image), image)
     end
   end
+
+  download_link = "images/#{folder}.zip"
+  halt 200, download_link
 end
 
 private
@@ -67,11 +74,9 @@ def make_dir_if_not_exists(folder)
   end
 end
 
-def validate_file(file)
+def file_valid?(file)
   accepted_formats = ['.jpg', '.jpeg', '.JPG', '.png', '.PNG', '.gif']
-  unless file.size < 8_000_000 && accepted_formats.include?(File.extname(file))
-    return status 415
-  end
+  file.size < 8_000_000 && accepted_formats.include?(File.extname(file))
 end
 
 def save_and_resize(folder, file, filename)
@@ -121,3 +126,12 @@ def visible?(dir, password)
   !dir.include?('___') || password == dir.split('___')[1]
 end
 
+def file_age(f)
+  Time.now - File.ctime(f)
+end
+
+def clean_zips(seconds)
+  Dir.glob('public/images/*.zip').each do |f|
+    File.delete(f) if file_age(f) > seconds
+  end  
+end
