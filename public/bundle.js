@@ -30067,11 +30067,7 @@
 
 	    var _this = _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, props));
 
-	    _this.state = {
-	      isHovered: false
-	    };
 	    _this.handleClick = _this.handleClick.bind(_this);
-	    _this.handleHover = _this.handleHover.bind(_this);
 	    return _this;
 	  }
 
@@ -30081,21 +30077,12 @@
 	      this.props.onClick(url);
 	    }
 	  }, {
-	    key: 'handleHover',
-	    value: function handleHover() {
-	      this.setState({
-	        isHovered: !this.state.isHovered
-	      });
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var sizeForNonActive = this.state.isHovered == true ? '110' : '100';
 	      return _react2.default.createElement('img', {
 	        src: this.props.url,
-	        height: this.props.active ? '500' : sizeForNonActive,
-	        onClick: this.handleClick.bind(this, this.props.index),
-	        onMouseEnter: this.handleHover, onMouseLeave: this.handleHover
+	        height: this.props.active ? '500' : '100',
+	        onClick: this.handleClick.bind(this, this.props.index)
 	      });
 	    }
 	  }]);

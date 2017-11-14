@@ -7,31 +7,19 @@ import DropzoneComponent from 'react-dropzone-component';
 class Image extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      isHovered: false
-    }
     this.handleClick = this.handleClick.bind(this);
-    this.handleHover = this.handleHover.bind(this);
   }
 
   handleClick(url) {
     this.props.onClick(url)
   }
 
-  handleHover() {
-    this.setState({
-      isHovered: !this.state.isHovered
-    });
-  }
-
   render() {
-    const sizeForNonActive = this.state.isHovered == true ? '110' : '100'
     return(
       <img
         src={this.props.url}
-        height={this.props.active ? '500' : sizeForNonActive}
+        height={this.props.active ? '500' : '100'}
         onClick={this.handleClick.bind(this, this.props.index)}
-        onMouseEnter={this.handleHover} onMouseLeave={this.handleHover}
       />
     )
   }

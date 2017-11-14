@@ -114,7 +114,9 @@ input {
   cursor: pointer;
   margin-left: 2px;
   margin-right: 3px;
-  -webkit-transition-duration: 0.3s; /* Safari */
-  transition-duration: 0.3s;
   border-radius: 4px;
+}
+
+.gallery >img:hover {
+  border-radius: 20px;
 }
