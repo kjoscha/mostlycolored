@@ -111,12 +111,26 @@ input {
 }
 
 .gallery > img {
+  height: 100px;
   cursor: pointer;
   margin-left: 2px;
   margin-right: 3px;
   border-radius: 4px;
 }
 
-.gallery >img:hover {
-  border-radius: 20px;
+.gallery > img.active {
+ height: 500px; 
+}
+
+.gallery > img:hover {
+  -webkit-transform: scale(0.95);
+  -mos-transform: scale(0.95);  
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+.gallery > img.active:hover {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
 }

@@ -30081,7 +30081,7 @@
 	    value: function render() {
 	      return _react2.default.createElement('img', {
 	        src: this.props.url,
-	        height: this.props.active ? '500' : '100',
+	        className: this.props.active ? 'active' : '',
 	        onClick: this.handleClick.bind(this, this.props.index)
 	      });
 	    }
@@ -30127,7 +30127,7 @@
 
 	      var images = this.props.images.map(function (image, index) {
 	        return _react2.default.createElement(Image, {
-	          key: index, url: image[1],
+	          key: index, url: _this3.state.activeImageIndex == index ? image[0] : image[1],
 	          index: index,
 	          active: index == _this3.state.activeImageIndex,
 	          onClick: _this3.activateImage

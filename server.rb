@@ -74,14 +74,7 @@ def galleries(password = '')
   Dir['public/images/*'].map do |dir|
     folder = dir.gsub('public/images/', '')
     if visible?(dir, password)
-      images = []
-      Dir.glob("#{dir}/*").each do |image|
-        next if image.include?('thumbnails')
-        filename = File.basename(image)
-        full_image = image.gsub('public/', '')
-        thumbnail = "#{dir}/thumbnails/#{filename}".gsub('public/', '')
-        images << [full_image, thumbnail]
-      end
+      images = images_in(dir)
     else
       images = 'locked'
     end
@@ -90,6 +83,18 @@ def galleries(password = '')
     last_changed_at = File.ctime(dir).to_s
     [name, images, last_changed_at, folder]
   end.compact.sort_by {|obj| obj[2]}
+end
+
+def images_in(dir)
+  images = []
+  Dir.glob("#{dir}/*").each do |image|
+    next if image.include?('thumbnails')
+    filename = File.basename(image)
+    full_image = image.gsub('public/', '')
+    thumbnail = "#{dir}/thumbnails/#{filename}".gsub('public/', '')
+    images << [full_image, thumbnail]
+  end
+  images
 end
 
 def visible?(dir, password)

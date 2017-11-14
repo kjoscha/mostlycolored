@@ -18,7 +18,7 @@ class Image extends Component {
     return(
       <img
         src={this.props.url}
-        height={this.props.active ? '500' : '100'}
+        className={this.props.active ? 'active' : ''}
         onClick={this.handleClick.bind(this, this.props.index)}
       />
     )
@@ -50,7 +50,7 @@ class Gallery extends Component {
   render() {    
     const images = this.props.images.map((image, index) =>
       <Image
-        key={index} url={image[1]}
+        key={index} url={this.state.activeImageIndex == index ? image[0] : image[1]}
         index={index}
         active={index == this.state.activeImageIndex}
         onClick={this.activateImage}
