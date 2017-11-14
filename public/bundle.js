@@ -30102,6 +30102,7 @@
 	      activeImageIndex: null
 	    };
 	    _this2.activateImage = _this2.activateImage.bind(_this2);
+	    _this2.download = _this2.download.bind(_this2);
 	    return _this2;
 	  }
 
@@ -30121,6 +30122,24 @@
 	      this.setState({ activeImageIndex: newIndex });
 	    }
 	  }, {
+	    key: 'download',
+	    value: function download() {
+	      var thisComponent = this;
+	      jQuery('.download-link').text('Creating the zip file. Please wait...');
+	      jQuery.ajax({
+	        url: 'zip',
+	        data: { folder: thisComponent.props.folder },
+	        method: 'GET',
+	        success: function success(data) {
+	          jQuery('.download-link').text('Download all images as zip >>>');
+	          window.location = data;
+	        },
+	        error: function error(data) {
+	          console.log('Error!');
+	        }
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this3 = this;
@@ -30133,10 +30152,20 @@
 	          onClick: _this3.activateImage
 	        });
 	      });
+	      var downloadLink = images.length > 0 ? _react2.default.createElement(
+	        'a',
+	        { className: 'download-link', onClick: this.download },
+	        'Download all images as zip >>>'
+	      ) : null;
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'gallery' },
-	        images
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'gallery' },
+	          images
+	        ),
+	        downloadLink
 	      );
 	    }
 	  }]);
@@ -30283,13 +30312,6 @@
 	      };
 	    }
 	  }, {
-	    key: 'currentgalleryImages',
-	    value: function currentgalleryImages() {
-	      if (this.state.activeGallery !== null) {
-	        return this.state.activeGallery[1];
-	      }
-	    }
-	  }, {
 	    key: 'linkColor',
 	    value: function linkColor(index) {
 	      return window.randomColors[index];
@@ -30309,24 +30331,8 @@
 	    key: 'finishUpload',
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
+	      // hack to get password without too much cross-component bindings
 	      this.getGalleries(jQuery('input[name=password]').val(), true);
-	      this.createZip();
-	    }
-	  }, {
-	    key: 'createZip',
-	    value: function createZip() {
-	      var thisComponent = this;
-	      jQuery.ajax({
-	        url: 'zip',
-	        data: { folder: thisComponent.state.activeGallery[3] },
-	        method: 'GET',
-	        success: function success(data) {
-	          window.location = data;
-	        },
-	        error: function error(data) {
-	          console.log('Error!');
-	        }
-	      });
 	    }
 	  }, {
 	    key: 'getGalleries',
@@ -30361,7 +30367,9 @@
 
 	      var gallery = null;
 	      if (this.state.activeGallery != null) {
-	        gallery = _react2.default.createElement(Gallery, { images: this.currentgalleryImages() });
+	        gallery = _react2.default.createElement(Gallery, {
+	          images: this.state.activeGallery[1],
+	          folder: this.state.activeGallery[3] });
 	      } else {
 	        gallery = _react2.default.createElement(
 	          'div',
@@ -30464,6 +30472,7 @@
 	    var color = getRandomColor();
 	    var value = '-1px 0 ' + color + ', 0 1px ' + color + ', 1px 0 ' + color + ', 0 -1px ' + color;
 	    (0, _jquery2.default)('.first-letter').css('text-shadow', value);
+	    (0, _jquery2.default)('.download-link').css('color', color);
 	  });
 	});
 

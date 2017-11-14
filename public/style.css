@@ -134,3 +134,8 @@ input {
   -ms-transform: scale(1);
   transform: scale(1);
 }
+
+.download-link {
+  color: purple;
+  cursor: pointer;
+}

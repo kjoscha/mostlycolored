@@ -34,6 +34,7 @@ class Gallery extends Component {
       activeImageIndex: null,
     }
     this.activateImage = this.activateImage.bind(this);
+    this.download = this.download.bind(this);    
   }
 
   // to reset state after images have updated
@@ -47,6 +48,23 @@ class Gallery extends Component {
     this.setState({ activeImageIndex: newIndex })
   }
 
+  download() {
+    var thisComponent = this;
+    jQuery('.download-link').text('Creating the zip file. Please wait...');
+    jQuery.ajax({
+      url: 'zip',
+      data: { folder: thisComponent.props.folder },
+      method: 'GET',
+      success: function(data) {
+        jQuery('.download-link').text('Download all images as zip >>>');        
+        window.location = data;
+      },
+      error: function(data) {
+        console.log('Error!');      
+      }
+    });
+  }
+
   render() {    
     const images = this.props.images.map((image, index) =>
       <Image
@@ -56,9 +74,14 @@ class Gallery extends Component {
         onClick={this.activateImage}
       />
     );
+    const downloadLink = images.length > 0 ?
+      <a className='download-link' onClick={this.download}>Download all images as zip >>></a> : null
     return(
-      <div className='gallery'>
-        {images}
+      <div>
+        <div className='gallery'>
+          {images}
+        </div>
+          {downloadLink}
       </div>
     )
   }
@@ -172,12 +195,6 @@ class App extends Component {
     };
   }
 
-  currentgalleryImages() {
-    if (this.state.activeGallery !== null) {
-      return this.state.activeGallery[1]
-    }
-  }
-
   linkColor(index) {
     return window.randomColors[index];
   }
@@ -197,23 +214,8 @@ class App extends Component {
 
   finishUpload() {
     this.setState({ uploading: false });
+    // hack to get password without too much cross-component bindings
     this.getGalleries(jQuery('input[name=password]').val(), true);
-    this.createZip();    
-  }
-
-  createZip() {
-    var thisComponent = this;
-    jQuery.ajax({
-      url: 'zip',
-      data: { folder: thisComponent.state.activeGallery[3] },
-      method: 'GET',
-      success: function(data) {
-        window.location = data;
-      },
-      error: function(data) {
-        console.log('Error!');      
-      }
-    });
   }
 
   getGalleries(password, changeToLatest) {
@@ -244,7 +246,9 @@ class App extends Component {
     
     let gallery = null;
     if (this.state.activeGallery != null) {
-      gallery = <Gallery images={this.currentgalleryImages()} />
+      gallery = <Gallery
+        images={this.state.activeGallery[1]}
+        folder={this.state.activeGallery[3]}/>
     } else {
       gallery = <div className='choose'><img src='choose.png' /></div>      
     };

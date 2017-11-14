@@ -11,7 +11,8 @@ jQuery(function() {
   jQuery(document).click(function() {
     var color = getRandomColor();
     var value = '-1px 0 ' + color + ', 0 1px ' + color + ', 1px 0 ' + color + ', 0 -1px ' + color;
-    jQuery('.first-letter').css('text-shadow', value)
+    jQuery('.first-letter').css('text-shadow', value);
+    jQuery('.download-link').css('color', color);
   });
 });
 
