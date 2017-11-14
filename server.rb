@@ -89,6 +89,7 @@ end
 
 def galleries(password = '')
   Dir['public/images/*'].map do |dir|
+    next if File.file?(dir)
     folder = dir.gsub('public/images/', '')
     if visible?(dir, password)
       images = images_in(dir)

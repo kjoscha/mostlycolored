@@ -198,14 +198,13 @@ class App extends Component {
   finishUpload() {
     this.setState({ uploading: false });
     this.getGalleries(jQuery('input[name=password]').val(), true);
-    this.createZip();
   }
 
   createZip() {
     var thisComponent = this;
     jQuery.ajax({
       url: 'create_zip',
-      data: { folder: this.state.activeGallery[3] },
+      data: { folder: thisComponent.state.activeGallery[3] },
       dataType: 'json',
       method: 'POST'
     });
@@ -219,7 +218,8 @@ class App extends Component {
       dataType: 'json',
       method: 'GET',
       success: function(data) {
-        thisComponent.updateGalleries(data, changeToLatest)
+        thisComponent.updateGalleries(data, changeToLatest);
+        thisComponent.createZip();        
       },
       error: function(data) {
         console.log('ERROR! ' + data);
