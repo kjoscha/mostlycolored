@@ -10,7 +10,7 @@ You'll need to run the following commands to get started!
 `bundle install`
 
 Then in order to get the application up and running you have to open up two
-tabs and run `ruby server.rb` in one and `npm start` in the other!
+tabs and run `bundle exec puma` in one and `npm start` in the other!
 
 You can add your React components within the `react` folder, where you will see
 there is already a `main.js` setup for you. This `main.js` replaces the `<div>`

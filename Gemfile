@@ -7,6 +7,7 @@ gem 'json'
 gem 'mini_magick'
 gem 'byebug'
 gem 'rubyzip'
+gem 'puma'
 
 group :development, :test do
   gem 'pry'
