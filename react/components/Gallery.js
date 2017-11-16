@@ -65,7 +65,7 @@ class Gallery extends Component {
     });
   }
 
-  render() {    
+  render() {
     const images = this.props.images.map((image, index) =>
       <Image
         key={index} url={this.state.activeImageIndex == index ? image[0] : image[1]}
@@ -180,6 +180,7 @@ class App extends Component {
     }
     this.activateGallery = this.activateGallery.bind(this);
     this.updateGalleries = this.updateGalleries.bind(this);
+    this.deleteGallery = this.deleteGallery.bind(this);    
     this.getGalleries = this.getGalleries.bind(this);
     this.linkColor = this.linkColor.bind(this);
   }
@@ -191,7 +192,7 @@ class App extends Component {
   updateGalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
     const latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
-    if (changeToLatest && latestChangedGallery[1] != 'locked') {
+    if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {      
       this.setState({ activeGallery: latestChangedGallery });  
     };
   }
@@ -229,10 +230,28 @@ class App extends Component {
       success: function(data) {
         thisComponent.updateGalleries(data, changeToLatest);
       },
-      error: function(data) {
+      error: function() {
         console.log('ERROR!');
       }
     });
+  }
+
+  deleteGallery() {
+    var thisComponent = this;
+    var gallery = thisComponent.state.activeGallery
+    if (gallery) {
+      jQuery.ajax({
+        url: 'delete_gallery',
+        data: { folder: gallery[3] },
+        method: 'POST',
+        success: function() {
+          thisComponent.getGalleries(jQuery('input[name=password]').val(), true);        
+        },
+        error: function() {
+          console.log('ERROR!');
+        }
+      });
+    }
   }
 
   render() {
@@ -298,6 +317,8 @@ class App extends Component {
             <div className='dz-message'>Drop some files here or click to select some. Files will be saved in the current gallery, thus feel free to create a new one with the input field on the top....</div>
           </DropzoneComponent>
         </div>
+
+        <div id='hdndlt' onClick={this.deleteGallery}></div>
       </div>
     )
   }

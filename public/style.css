@@ -3,6 +3,15 @@ body {
   color: gray;
 }
 
+/* hidden delete button */
+#hdndlt {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  background: darkslategray;
+}
 
 #header {
   text-align: center;  
@@ -95,8 +104,8 @@ input {
 }
 
 .choose > img {
-  width: 100%;
-  max-width: 500px;
+  width: 500px;
+  max-width: 100%;
 }
 
 .gallery-container {
@@ -119,7 +128,7 @@ input {
 }
 
 .gallery > img.active {
-  width: 500px;
+  width: 700px;
   max-width: 100%;
   height: auto; 
 }

@@ -9,7 +9,7 @@ use Rack::Auth::Basic, 'Remember what has Joscha told you...' do |username, pass
 end
 
 get '/' do
-  clean_zips(3600)
+  clean_zips(24 * 60 * 60) # remove all zip files older than 24 hours
   @galleries = galleries
   haml :index
 end
@@ -20,6 +20,11 @@ end
 
 get '/get_galleries' do
   halt 200, galleries(params[:password]).to_json
+end
+
+post '/delete_gallery' do
+  FileUtils.rm_r(("./public/images/#{params[:folder]}"))
+  status 200  
 end
 
 post '/save_image' do
@@ -47,13 +52,12 @@ end
 get '/zip' do
   folder = params[:folder]  
   dir = "./public/images/#{folder}"
-  zipfile = "./public/images/#{folder}.zip"
+  timestamp_suffix = Time.now.strftime('%Y%m%d%H%M%S')
+  zipfile = "./public/images/#{folder}_#{timestamp_suffix}.zip"
 
   images = Dir.glob("#{dir}/*").map do |image|
     image unless image.include?('thumbnails')
   end.compact
-
-  File.delete(zipfile) if File.exist?(zipfile)
   
   Zip::File.open(zipfile, Zip::File::CREATE) do |zipfile|
     images.each do |image|
@@ -61,7 +65,7 @@ get '/zip' do
     end
   end
 
-  download_link = "images/#{folder}.zip"
+  download_link = zipfile.gsub('./public/', '')
   halt 200, download_link
 end
 

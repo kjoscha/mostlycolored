@@ -30293,6 +30293,7 @@
 	    };
 	    _this6.activateGallery = _this6.activateGallery.bind(_this6);
 	    _this6.updateGalleries = _this6.updateGalleries.bind(_this6);
+	    _this6.deleteGallery = _this6.deleteGallery.bind(_this6);
 	    _this6.getGalleries = _this6.getGalleries.bind(_this6);
 	    _this6.linkColor = _this6.linkColor.bind(_this6);
 	    return _this6;
@@ -30308,7 +30309,7 @@
 	    value: function updateGalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
 	      var latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
-	      if (changeToLatest && latestChangedGallery[1] != 'locked') {
+	      if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {
 	        this.setState({ activeGallery: latestChangedGallery });
 	      };
 	    }
@@ -30347,10 +30348,29 @@
 	        success: function success(data) {
 	          thisComponent.updateGalleries(data, changeToLatest);
 	        },
-	        error: function error(data) {
+	        error: function error() {
 	          console.log('ERROR!');
 	        }
 	      });
+	    }
+	  }, {
+	    key: 'deleteGallery',
+	    value: function deleteGallery() {
+	      var thisComponent = this;
+	      var gallery = thisComponent.state.activeGallery;
+	      if (gallery) {
+	        jQuery.ajax({
+	          url: 'delete_gallery',
+	          data: { folder: gallery[3] },
+	          method: 'POST',
+	          success: function success() {
+	            thisComponent.getGalleries(jQuery('input[name=password]').val(), true);
+	          },
+	          error: function error() {
+	            console.log('ERROR!');
+	          }
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -30438,7 +30458,8 @@
 	              'Drop some files here or click to select some. Files will be saved in the current gallery, thus feel free to create a new one with the input field on the top....'
 	            )
 	          )
-	        )
+	        ),
+	        _react2.default.createElement('div', { id: 'hdndlt', onClick: this.deleteGallery })
 	      );
 	    }
 	  }]);
