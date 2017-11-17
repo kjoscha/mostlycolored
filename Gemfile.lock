@@ -26,6 +26,7 @@ GEM
     coderay (1.1.2)
     concurrent-ruby (1.0.3)
     diff-lcs (1.3)
+    ffi (1.9.18)
     haml (5.0.2)
       temple (>= 0.8.0)
       tilt
@@ -44,6 +45,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (3.0.0)
+    puma (3.10.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -70,6 +72,8 @@ GEM
     sinatra-activerecord (2.0.11)
       activerecord (>= 3.2)
       sinatra (~> 1.0)
+    sys-filesystem (1.1.8)
+      ffi
     temple (0.8.0)
     thread_safe (0.3.5)
     tilt (2.0.4)
@@ -89,10 +93,12 @@ DEPENDENCIES
   launchy
   mini_magick
   pry
+  puma
   rspec
   rubyzip
   sinatra
   sinatra-activerecord
+  sys-filesystem
 
 BUNDLED WITH
    1.13.7

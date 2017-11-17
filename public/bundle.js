@@ -30459,6 +30459,11 @@
 	            )
 	          )
 	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'disk-space' },
+	          'Still ' + window.diskSpace + ' gigabytes free space.'
+	        ),
 	        _react2.default.createElement('div', { id: 'hdndlt', onClick: this.deleteGallery })
 	      );
 	    }
