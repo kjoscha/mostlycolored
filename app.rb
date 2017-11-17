@@ -5,12 +5,28 @@ require 'byebug'
 require 'zip'
 require 'sys/filesystem'
 
+require_relative 'lib/authentication'
+require_relative 'lib/user'
+
 class App < Sinatra::Base
-  use Rack::Auth::Basic, 'Remember what has Joscha told you...' do |username, password|
-    [username, password] == ['admin', 'admin']  
+  use Rack::Session::Pool, expire_after: 30 * 60 # Expire sessions after 30 minutes of inactivity
+  helpers Authentication  
+
+  get '/login' do
+    haml :login
+  end
+
+  post '/login' do
+    if user = User.authenticate(params)
+      session[:user] = user
+      redirect_to_original_request
+    else
+      redirect '/login'
+    end
   end
 
   get '/' do
+    authenticate!
     clean_zips(24 * 60 * 60) # remove all zip files older than 24 hours
     @disk_space = disk_space
     @galleries = galleries

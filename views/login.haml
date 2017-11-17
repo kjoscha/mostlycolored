@@ -1,0 +1,10 @@
+%form{action: '/login', method: 'post'}
+  %fieldset
+    %p
+      %label.username{for: 'username'} Username
+      %input#username{maxlength: '100', name: 'username', size: '25', type: 'text'}
+    %p
+      %label.username{for: 'password'} Password
+      %input#username{maxlength: '100', name: 'password', size: '25', type: 'password'}
+    %p
+      %input{type: 'submit', value: 'Log In'}

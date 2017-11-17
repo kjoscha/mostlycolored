@@ -13,5 +13,7 @@
 :javascript
   window.galleries = #{@galleries}
   window.diskSpace = #{@disk_space}
+  window.user = "#{session[:user].name}"
+  console.log(window.user)
 
 %script{src: 'bundle.js'}
