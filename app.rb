@@ -12,6 +12,11 @@ class App < Sinatra::Base
   use Rack::Session::Pool, expire_after: 30 * 60 # Expire sessions after 30 minutes of inactivity
   helpers Authentication  
 
+  before do
+    pass if %w[login].include? request.path_info.split('/')[1]
+    authenticate!  
+  end
+
   get '/login' do
     haml :login
   end
@@ -26,7 +31,6 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    authenticate!
     clean_zips(24 * 60 * 60) # remove all zip files older than 24 hours
     @disk_space = disk_space
     @galleries = galleries
@@ -42,8 +46,10 @@ class App < Sinatra::Base
   end
 
   post '/delete_gallery' do
-    FileUtils.rm_r(("./public/images/#{params[:folder]}"))
-    status 200  
+    if admin?
+      FileUtils.rm_r(("./public/images/#{params[:folder]}"))
+      status 200
+    end
   end
 
   post '/save_image' do
@@ -89,6 +95,10 @@ class App < Sinatra::Base
   end
 
   private
+
+  def admin?
+    session[:user].name == 'Admin'
+  end
 
   def make_dir_if_not_exists(folder)
     unless Dir.exist?("./public/images/#{folder}")
@@ -146,7 +156,7 @@ class App < Sinatra::Base
   def visible?(dir, password)
     # galleries are hidden when '___' appears in name
     # Right part of the name is the search string to unlock
-    !dir.include?('___') || password == dir.split('___')[1]
+    !dir.include?('___') || admin? || password == dir.split('___')[1]
   end
 
   def file_age(f)

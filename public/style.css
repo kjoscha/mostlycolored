@@ -3,6 +3,26 @@ body {
   color: gray;
 }
 
+.login-container {
+  text-align: center;
+}
+
+input {
+  background-color: black;
+  outline: none;
+  margin: 5px;
+  border: 1px solid darkslategray;
+  border-radius: 4px;
+  color: gray;
+  width: 170px;
+  text-align: center;
+  height: 30px;  
+}
+
+.form-container input[type=submit] {
+  height: 33px;
+}
+
 /* hidden delete button */
 #hdndlt {
   position: absolute;
@@ -35,16 +55,6 @@ body {
   text-shadow: -1px 0 purple, 0 1px purple, 1px 0 purple, 0 -1px purple;
 }
 
-input {
-  background-color: black;
-  outline: none;
-  margin: 5px;
-  border: 1px solid darkslategray;
-  border-radius: 4px;
-  color: gray;
-  width: 170px;
-}
-
 * {
   font-family: "Courier New", Courier, monospace
 }
@@ -70,15 +80,6 @@ input {
 .form-container {
   padding: 20px;
   text-align: center;  
-}
-
-.form-container input[type=text] {
-  text-align: center;
-  height: 30px;
-}
-
-.form-container input[type=submit] {
-  height: 33px;
 }
 
 .gallery-link-container {
