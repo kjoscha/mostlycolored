@@ -13,6 +13,12 @@ body {
   background: darkslategray;
 }
 
+#disk-space {
+  color: darkslategray;
+  float: right;
+  padding: 20px;
+}
+
 #header {
   text-align: center;  
 }
@@ -36,6 +42,7 @@ input {
   border: 1px solid grey;
   border-radius: 4px;
   color: gray;
+  width: 170px;
 }
 
 * {

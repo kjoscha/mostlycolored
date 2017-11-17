@@ -2,7 +2,7 @@
 %html
   %body
     %meta{:charset => "utf-8"}
-    %title Your Title Here
+    %title MOSTLYCOLORED
     %link{:href => "style.css", :rel => "stylesheet", :type => "text/css"}
     #header
       %span.first-letter M
@@ -11,5 +11,6 @@
 
 :javascript
   window.galleries = #{@galleries}
+  window.diskSpace = #{@disk_space}
 
 %script{src: 'bundle.js'}

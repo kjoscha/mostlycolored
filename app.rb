@@ -3,6 +3,7 @@ require 'json'
 require 'mini_magick'
 require 'byebug'
 require 'zip'
+require 'sys/filesystem'
 
 class App < Sinatra::Base
   use Rack::Auth::Basic, 'Remember what has Joscha told you...' do |username, password|
@@ -11,6 +12,7 @@ class App < Sinatra::Base
 
   get '/' do
     clean_zips(24 * 60 * 60) # remove all zip files older than 24 hours
+    @disk_space = disk_space
     @galleries = galleries
     haml :index
   end
@@ -139,5 +141,13 @@ class App < Sinatra::Base
     Dir.glob('public/images/*.zip').each do |f|
       File.delete(f) if file_age(f) > seconds
     end  
+  end
+
+  def disk_space    
+    stat = Sys::Filesystem.stat('/')
+    gigabytes = (
+      stat.block_size.to_f * stat.blocks_available /
+        1024 / 1024 / 1024
+      ).round(2)
   end
 end

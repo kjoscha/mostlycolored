@@ -8,6 +8,7 @@ gem 'mini_magick'
 gem 'byebug'
 gem 'rubyzip'
 gem 'puma'
+gem 'sys-filesystem'
 
 group :development, :test do
   gem 'pry'

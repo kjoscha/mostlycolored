@@ -318,6 +318,7 @@ class App extends Component {
           </DropzoneComponent>
         </div>
 
+        <div id='disk-space'>{'Still ' + window.diskSpace + ' gigabytes free space.'}</div>
         <div id='hdndlt' onClick={this.deleteGallery}></div>
       </div>
     )
