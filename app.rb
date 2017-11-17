@@ -59,7 +59,7 @@ class App < Sinatra::Base
 
     if file_valid?(file)
       make_dir_if_not_exists(folder)
-      save_and_resize(folder, file, filename)
+      save_and_resize(folder, file, filename, 3000)
       status 200
     else
       status 415
@@ -112,7 +112,7 @@ class App < Sinatra::Base
     file.size < 15_000_000 && accepted_formats.include?(File.extname(file))
   end
 
-  def save_and_resize(folder, file, filename)
+  def save_and_resize(folder, file, filename, px)
     path = "./public/images/#{folder}/#{filename}"
     
     File.open(path, 'wb') { |f| f.write(file.read) }
@@ -122,7 +122,9 @@ class App < Sinatra::Base
     thumbnail.write "./public/images/#{folder}/thumbnails/#{filename}"
 
     image = MiniMagick::Image.new(path)
-    image.resize '1600x1600'
+    if image[:width] > px || image[:height] > px
+      image.resize "#{px}x#{px}"
+    end
   end
 
   def galleries(password = '')
