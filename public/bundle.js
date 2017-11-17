@@ -30135,6 +30135,7 @@
 	          window.location = data;
 	        },
 	        error: function error(data) {
+	          jQuery('.download-link').text('Download all images as zip >>>');
 	          console.log('Error!');
 	        }
 	      });

@@ -56,10 +56,11 @@ class Gallery extends Component {
       data: { folder: thisComponent.props.folder },
       method: 'GET',
       success: function(data) {
-        jQuery('.download-link').text('Download all images as zip >>>');        
+        jQuery('.download-link').text('Download all images as zip >>>');   
         window.location = data;
       },
       error: function(data) {
+        jQuery('.download-link').text('Download all images as zip >>>');        
         console.log('Error!');      
       }
     });
