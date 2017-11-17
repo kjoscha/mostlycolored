@@ -239,7 +239,7 @@ class App extends Component {
   deleteGallery() {
     var thisComponent = this;
     var gallery = thisComponent.state.activeGallery
-    if (gallery) {
+    if (gallery && confirm('Are you sure you want to delete this?')) {
       jQuery.ajax({
         url: 'delete_gallery',
         data: { folder: gallery[3] },
