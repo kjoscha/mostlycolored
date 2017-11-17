@@ -187,7 +187,10 @@ class App extends Component {
   }
 
   activateGallery(gallery) {
-    this.setState({ activeGallery: gallery })
+    this.setState({ activeGallery: gallery });
+    // show password in input field
+    const password = gallery[3].split('___')[1]
+    jQuery('input[name=password]').val(password);
   }
 
   updateGalleries(galleries, changeToLatest) {
@@ -257,7 +260,8 @@ class App extends Component {
 
   render() {
     const galleryLinks = this.state.galleries.map((gallery, index) =>
-      <GalleryLink locked={false} key={gallery[0]}
+      <GalleryLink
+        key={gallery[0]}
         gallery={gallery}
         onClick={this.activateGallery}
         active={(this.state.activeGallery !== null) && (gallery[0] == this.state.activeGallery[0])}

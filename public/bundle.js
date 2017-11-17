@@ -30304,6 +30304,9 @@
 	    key: 'activateGallery',
 	    value: function activateGallery(gallery) {
 	      this.setState({ activeGallery: gallery });
+	      // show password in input field
+	      var password = gallery[3].split('___')[1];
+	      jQuery('input[name=password]').val(password);
 	    }
 	  }, {
 	    key: 'updateGalleries',
@@ -30379,7 +30382,8 @@
 	      var _this7 = this;
 
 	      var galleryLinks = this.state.galleries.map(function (gallery, index) {
-	        return _react2.default.createElement(GalleryLink, { locked: false, key: gallery[0],
+	        return _react2.default.createElement(GalleryLink, {
+	          key: gallery[0],
 	          gallery: gallery,
 	          onClick: _this7.activateGallery,
 	          active: _this7.state.activeGallery !== null && gallery[0] == _this7.state.activeGallery[0],
