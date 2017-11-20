@@ -3,3 +3,4 @@ node_modules
 .byebug_history
 stderr
 stdout
+public/images/*

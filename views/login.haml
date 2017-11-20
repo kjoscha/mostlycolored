@@ -1,13 +1,5 @@
-!!!
-%html
-  %body
-    %meta{charset: "utf-8", name: "viewport", content: "width=device-width, initial-scale=0.5"}
-
-    %title MOSTLYCOLORED
-    %link{:href => "style.css", :rel => "stylesheet", :type => "text/css"}
-
-    .login-container
-      %form{action: '/login', method: 'post'}
-        %input#username{maxlength: '100', name: 'username', placeholder: 'Username', size: '25', type: 'text'}
-        %input#username{maxlength: '100', name: 'password', placeholder: 'Password', size: '25', type: 'password'}
-        %input{type: 'submit', value: 'Log In'}
+.login-container
+  %form{action: '/login', method: 'post'}
+    %input#username{maxlength: '100', name: 'username', placeholder: 'Username', size: '25', type: 'text'}
+    %input#username{maxlength: '100', name: 'password', placeholder: 'Password', size: '25', type: 'password'}
+    %input{type: 'submit', value: 'Log In'}

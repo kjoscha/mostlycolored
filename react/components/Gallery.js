@@ -1,4 +1,3 @@
-import '../random_colors';
 import 'node_modules/react-dropzone-component/styles/filepicker.css';
 import 'node_modules/dropzone/dist/min/dropzone.min.css';
 import React, { Component } from 'react';
@@ -53,7 +52,7 @@ class Gallery extends Component {
     jQuery('.download-link').text('Creating the zip file. Please wait...');
     jQuery.ajax({
       url: 'zip',
-      data: { folder: thisComponent.props.folder },
+      data: { folder: thisComponent.props.gallery[3] },
       method: 'GET',
       success: function(data) {
         jQuery('.download-link').text('Download all images as zip >>>');   
@@ -67,7 +66,7 @@ class Gallery extends Component {
   }
 
   render() {
-    const images = this.props.images.map((image, index) =>
+    const images = this.props.gallery[1].map((image, index) =>
       <Image
         key={index} url={this.state.activeImageIndex == index ? image[0] : image[1]}
         index={index}
@@ -80,6 +79,7 @@ class Gallery extends Component {
     return(
       <div>
         <div className='gallery'>
+          <div className='edited-at'>Latest update on {this.props.gallery[2].substring(0, 10)}</div>
           {images}
         </div>
           {downloadLink}
@@ -271,9 +271,7 @@ class App extends Component {
     
     let gallery = null;
     if (this.state.activeGallery != null) {
-      gallery = <Gallery
-        images={this.state.activeGallery[1]}
-        folder={this.state.activeGallery[3]}/>
+      gallery = <Gallery gallery={this.state.activeGallery} />
     } else {
       gallery = <div className='choose'><img src='choose.png' /></div>      
     };
