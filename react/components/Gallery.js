@@ -214,14 +214,19 @@ class App extends Component {
           this.state.activeGallery[3] :
           'New_' + Math.random().toString(36).substring(7)
       });
-    };    
+    }; 
     this.setState({ uploading: true });    
   }
 
   finishUpload() {
     this.setState({ uploading: false });
     // hack to get password without too much cross-component bindings
-    this.getGalleries(jQuery('input[name=password]').val(), true);
+    const password = jQuery('input[name=password]').val();
+    // timeout to avoid empty thumbnail for latest uploaded image
+    const thisComponent = this;    
+    setTimeout(function() {
+      thisComponent.getGalleries(password, true)      
+    }, 1000);
   }
 
   getGalleries(password, changeToLatest) {
@@ -290,7 +295,8 @@ class App extends Component {
     
     let dropzonEventHandlers = {
       addedfile: () => this.addItems(),
-      queuecomplete: () => this.finishUpload(),
+      queuecomplete: () => this.finishUpload(),            
+      success: () => this.finishUpload(),      
     }
 
     return(

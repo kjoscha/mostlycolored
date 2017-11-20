@@ -154,7 +154,7 @@ class App < Sinatra::Base
       thumbnail = "#{dir}/thumbnails/#{filename}".gsub('public/', '')
       images << [full_image, thumbnail]
     end
-    images
+    images.sort
   end
 
   def visible?(dir, password)

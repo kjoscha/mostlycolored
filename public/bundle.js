@@ -30386,7 +30386,12 @@
 	    value: function finishUpload() {
 	      this.setState({ uploading: false });
 	      // hack to get password without too much cross-component bindings
-	      this.getGalleries(jQuery('input[name=password]').val(), true);
+	      var password = jQuery('input[name=password]').val();
+	      // timeout to avoid empty thumbnail for latest uploaded image
+	      var thisComponent = this;
+	      setTimeout(function () {
+	        thisComponent.getGalleries(password, true);
+	      }, 1000);
 	    }
 	  }, {
 	    key: 'getGalleries',
@@ -30463,6 +30468,9 @@
 	          return _this7.addItems();
 	        },
 	        queuecomplete: function queuecomplete() {
+	          return _this7.finishUpload();
+	        },
+	        success: function success() {
 	          return _this7.finishUpload();
 	        }
 	      };
