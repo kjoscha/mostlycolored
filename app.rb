@@ -115,15 +115,17 @@ class App < Sinatra::Base
   def save_and_resize(folder, file, filename, px)
     path = "./public/images/#{folder}/#{filename}"
     
-    File.open(path, 'wb') { |f| f.write(file.read) }
+    unless File.file?(path)
+      File.open(path, 'wb') { |f| f.write(file.read) }
 
-    thumbnail = MiniMagick::Image.open(path)
-    thumbnail.resize '200x200'
-    thumbnail.write "./public/images/#{folder}/thumbnails/#{filename}"
+      thumbnail = MiniMagick::Image.open(path)
+      thumbnail.resize '200x200'
+      thumbnail.write "./public/images/#{folder}/thumbnails/#{filename}"
 
-    image = MiniMagick::Image.new(path)
-    if image[:width] > px || image[:height] > px
-      image.resize "#{px}x#{px}"
+      image = MiniMagick::Image.new(path)
+      if image[:width] > px || image[:height] > px
+        image.resize "#{px}x#{px}"
+      end
     end
   end
 
