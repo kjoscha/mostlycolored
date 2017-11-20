@@ -272,8 +272,6 @@ class App extends Component {
     let gallery = null;
     if (this.state.activeGallery != null) {
       gallery = <Gallery gallery={this.state.activeGallery} />
-    } else {
-      gallery = <div className='choose'><img src='choose.png' /></div>      
     };
     
     let dropzoneComponentConfig = {

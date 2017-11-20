@@ -30442,12 +30442,6 @@
 	      var gallery = null;
 	      if (this.state.activeGallery != null) {
 	        gallery = _react2.default.createElement(Gallery, { gallery: this.state.activeGallery });
-	      } else {
-	        gallery = _react2.default.createElement(
-	          'div',
-	          { className: 'choose' },
-	          _react2.default.createElement('img', { src: 'choose.png' })
-	        );
 	      };
 
 	      var dropzoneComponentConfig = {

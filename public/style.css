@@ -1,6 +1,28 @@
-body {
+html {
   background: black;
+}
+
+body {
   color: gray;
+}
+
+body:after {
+  position: fixed;
+  content: '';
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width: 100%;
+  background-image: url('bg.jpg');
+  background-position: center bottom;
+  -webkit-background-size: 100% auto;
+  -moz-background-size: 100% auto;
+  -o-background-size: 100% auto;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  z-index: -1;
+  opacity: 1;
 }
 
 .login-container {
@@ -61,6 +83,7 @@ input {
 
 .dropzone-container {
   padding: 20px;
+  opacity: 0.75;
 }
 
 .filepicker {
