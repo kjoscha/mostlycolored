@@ -1,4 +1,3 @@
-import '../random_colors';
 import 'node_modules/react-dropzone-component/styles/filepicker.css';
 import 'node_modules/dropzone/dist/min/dropzone.min.css';
 import React, { Component } from 'react';
@@ -53,20 +52,21 @@ class Gallery extends Component {
     jQuery('.download-link').text('Creating the zip file. Please wait...');
     jQuery.ajax({
       url: 'zip',
-      data: { folder: thisComponent.props.folder },
+      data: { folder: thisComponent.props.gallery[3] },
       method: 'GET',
       success: function(data) {
-        jQuery('.download-link').text('Download all images as zip >>>');        
+        jQuery('.download-link').text('Download all images as zip >>>');   
         window.location = data;
       },
       error: function(data) {
+        jQuery('.download-link').text('Download all images as zip >>>');        
         console.log('Error!');      
       }
     });
   }
 
   render() {
-    const images = this.props.images.map((image, index) =>
+    const images = this.props.gallery[1].map((image, index) =>
       <Image
         key={index} url={this.state.activeImageIndex == index ? image[0] : image[1]}
         index={index}
@@ -79,6 +79,7 @@ class Gallery extends Component {
     return(
       <div>
         <div className='gallery'>
+          <div className='edited-at'>Latest update on {this.props.gallery[2].substring(0, 10)}</div>
           {images}
         </div>
           {downloadLink}
@@ -105,7 +106,7 @@ class GalleryLink extends Component {
       </span>
     } else {
       return <span
-        style={{color: this.props.color, border: this.props.active ? ('1px solid ' + this.props.color) : 'none'}}
+        style={{color: this.props.color, border: this.props.active ? ('1px solid ' + this.props.color) : '1px solid black'}}
         className={'gallery-link ' + (this.props.active ? 'active' : '')}
         onClick={this.handleClick.bind(this, this.props.gallery)}>
         {this.props.gallery[0]}
@@ -186,7 +187,10 @@ class App extends Component {
   }
 
   activateGallery(gallery) {
-    this.setState({ activeGallery: gallery })
+    this.setState({ activeGallery: gallery });
+    // show password in input field
+    const password = gallery[3].split('___')[1]
+    jQuery('input[name=password]').val(password);
   }
 
   updateGalleries(galleries, changeToLatest) {
@@ -256,7 +260,8 @@ class App extends Component {
 
   render() {
     const galleryLinks = this.state.galleries.map((gallery, index) =>
-      <GalleryLink locked={false} key={gallery[0]}
+      <GalleryLink
+        key={gallery[0]}
         gallery={gallery}
         onClick={this.activateGallery}
         active={(this.state.activeGallery !== null) && (gallery[0] == this.state.activeGallery[0])}
@@ -266,9 +271,7 @@ class App extends Component {
     
     let gallery = null;
     if (this.state.activeGallery != null) {
-      gallery = <Gallery
-        images={this.state.activeGallery[1]}
-        folder={this.state.activeGallery[3]}/>
+      gallery = <Gallery gallery={this.state.activeGallery} />
     } else {
       gallery = <div className='choose'><img src='choose.png' /></div>      
     };

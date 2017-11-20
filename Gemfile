@@ -9,6 +9,7 @@ gem 'byebug'
 gem 'rubyzip'
 gem 'puma'
 gem 'sys-filesystem'
+gem 'bcrypt'
 
 group :development, :test do
   gem 'pry'

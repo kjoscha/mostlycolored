@@ -5,9 +5,29 @@ require 'byebug'
 require 'zip'
 require 'sys/filesystem'
 
+require_relative 'lib/authentication'
+require_relative 'lib/user'
+
 class App < Sinatra::Base
-  use Rack::Auth::Basic, 'Remember what has Joscha told you...' do |username, password|
-    [username, password] == ['admin', 'admin']  
+  use Rack::Session::Pool, expire_after: 30 * 60 # Expire sessions after 30 minutes of inactivity
+  helpers Authentication  
+
+  before do
+    pass if %w[login].include? request.path_info.split('/')[1]
+    authenticate!  
+  end
+
+  get '/login' do
+    haml :login
+  end
+
+  post '/login' do
+    if user = User.authenticate(params)
+      session[:user] = user
+      redirect_to_original_request
+    else
+      redirect '/login'
+    end
   end
 
   get '/' do
@@ -26,8 +46,10 @@ class App < Sinatra::Base
   end
 
   post '/delete_gallery' do
-    FileUtils.rm_r(("./public/images/#{params[:folder]}"))
-    status 200  
+    if admin?
+      FileUtils.rm_r(("./public/images/#{params[:folder]}"))
+      status 200
+    end
   end
 
   post '/save_image' do
@@ -37,7 +59,7 @@ class App < Sinatra::Base
 
     if file_valid?(file)
       make_dir_if_not_exists(folder)
-      save_and_resize(folder, file, filename)
+      save_and_resize(folder, file, filename, 3000)
       status 200
     else
       status 415
@@ -74,6 +96,10 @@ class App < Sinatra::Base
 
   private
 
+  def admin?
+    session[:user].name == 'Admin'
+  end
+
   def make_dir_if_not_exists(folder)
     unless Dir.exist?("./public/images/#{folder}")
       Dir.mkdir("./public/images/#{folder}")
@@ -86,7 +112,7 @@ class App < Sinatra::Base
     file.size < 15_000_000 && accepted_formats.include?(File.extname(file))
   end
 
-  def save_and_resize(folder, file, filename)
+  def save_and_resize(folder, file, filename, px)
     path = "./public/images/#{folder}/#{filename}"
     
     File.open(path, 'wb') { |f| f.write(file.read) }
@@ -96,7 +122,9 @@ class App < Sinatra::Base
     thumbnail.write "./public/images/#{folder}/thumbnails/#{filename}"
 
     image = MiniMagick::Image.new(path)
-    image.resize '1600x1600'
+    if image[:width] > px || image[:height] > px
+      image.resize "#{px}x#{px}"
+    end
   end
 
   def galleries(password = '')
@@ -130,7 +158,7 @@ class App < Sinatra::Base
   def visible?(dir, password)
     # galleries are hidden when '___' appears in name
     # Right part of the name is the search string to unlock
-    !dir.include?('___') || password == dir.split('___')[1]
+    !dir.include?('___') || admin? || password == dir.split('___')[1]
   end
 
   def file_age(f)

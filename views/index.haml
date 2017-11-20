@@ -1,17 +1,8 @@
-!!!
-%html
-  %body
-    %meta{charset: "utf-8", name: "viewport", content: "width=device-width, initial-scale=0.5"}
-
-    %title MOSTLYCOLORED
-    %link{:href => "style.css", :rel => "stylesheet", :type => "text/css"}
-    #header
-      %span.first-letter M
-      %span OSTLYCOLORED
-    #app
+#app
 
 :javascript
   window.galleries = #{@galleries}
   window.diskSpace = #{@disk_space}
+  window.user = "#{session[:user].name}"
 
 %script{src: 'bundle.js'}
