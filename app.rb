@@ -31,7 +31,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    clean_zips(24 * 60 * 60) # remove all zip files older than 24 hours
+    clean_zips(3 * 60 * 60) # remove all zip files older than 3 hours
     @disk_space = disk_space
     @galleries = galleries
     haml :index
@@ -75,10 +75,11 @@ class App < Sinatra::Base
   end
 
   get '/zip' do
-    folder = params[:folder]  
-    dir = "./public/images/#{folder}"
+    dir = "./public/images/#{params[:folder]}"
+    folder_without_pw = params[:folder].split('___')[0]
     timestamp_suffix = Time.now.strftime('%Y%m%d%H%M%S')
-    zipfile = "./public/images/#{folder}_#{timestamp_suffix}.zip"
+
+    zipfile = "./public/images/#{folder_without_pw}_#{timestamp_suffix}.zip"
 
     images = Dir.glob("#{dir}/*").map do |image|
       image unless image.include?('thumbnails')
