@@ -30289,7 +30289,7 @@
 	    key: 'loadMore',
 	    value: function loadMore() {
 	      this.setState({
-	        itemsToShow: this.state.itemsToShow += 5
+	        itemsToShow: this.state.itemsToShow += 10
 	      });
 	    }
 	  }, {

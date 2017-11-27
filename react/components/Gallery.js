@@ -135,7 +135,7 @@ class GalleryLinkContainer extends Component {
 
   loadMore() {
     this.setState({
-      itemsToShow: this.state.itemsToShow += 5
+      itemsToShow: this.state.itemsToShow += 10
     })
   }
 
