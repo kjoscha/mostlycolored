@@ -74,12 +74,18 @@ class Gallery extends Component {
         onClick={this.activateImage}
       />
     );
+
     const downloadLink = images.length > 0 ?
-      <a className='download-link' onClick={this.download}>Download all images as zip >>></a> : null
+      <a className='download-link' onClick={this.download}>Download all images as zip >>></a> : null;
+
+    const metaInfo = 'Latest update on ' +
+      this.props.gallery[2].substring(0, 10) + ' | '
+      + this.props.gallery[1].length + ' images';
+
     return(
       <div>
         <div className='gallery'>
-          <div className='edited-at'>Latest update on {this.props.gallery[2].substring(0, 10)}</div>
+          <div className='edited-at'>{metaInfo}</div>
           {images}
         </div>
           {downloadLink}

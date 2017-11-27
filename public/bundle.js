@@ -30195,11 +30195,15 @@
 	          onClick: _this3.activateImage
 	        });
 	      });
+
 	      var downloadLink = images.length > 0 ? _react2.default.createElement(
 	        'a',
 	        { className: 'download-link', onClick: this.download },
 	        'Download all images as zip >>>'
 	      ) : null;
+
+	      var metaInfo = 'Latest update on ' + this.props.gallery[2].substring(0, 10) + ' | ' + this.props.gallery[1].length + ' images';
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -30209,8 +30213,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'edited-at' },
-	            'Latest update on ',
-	            this.props.gallery[2].substring(0, 10)
+	            metaInfo
 	          ),
 	          images
 	        ),
