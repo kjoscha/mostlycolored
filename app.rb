@@ -143,7 +143,7 @@ class App < Sinatra::Base
       name = folder.split('___')[0]
       last_changed_at = File.ctime(dir).to_s
       [name, images, last_changed_at, folder]
-    end.compact.sort_by {|obj| obj[2]}
+    end.compact.sort_by {|obj| obj[2]}.reverse!
   end
 
   def images_in(dir)

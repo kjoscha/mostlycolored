@@ -128,6 +128,15 @@ input {
   border-style: 1px solidy gray;
 }
 
+.show-more {
+  width: 100%;
+  color: darkslategray;
+  cursor: pointer;
+  border-top: 1px solid #1d1d1d;
+  clear: left;
+  text-align: center;
+}
+
 .choose {
   padding-top: 50px;
   padding-bottom: 50px;
@@ -160,12 +169,15 @@ input {
   margin-left: 2px;
   margin-right: 3px;
   border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 20px 5px black;
+  -moz-box-shadow: 0px 0px 20px 5px black;
+  box-shadow: 0px 0px 20px 5px black;
 }
 
 .gallery > img.active {
   width: 700px;
   max-width: 100%;
-  height: auto; 
+  height: auto;
 }
 
 .gallery > img:hover {

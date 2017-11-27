@@ -30261,23 +30261,85 @@
 	  return GalleryLink;
 	}(_react.Component);
 
-	var GalleryForm = function (_Component4) {
-	  _inherits(GalleryForm, _Component4);
+	var GalleryLinkContainer = function (_Component4) {
+	  _inherits(GalleryLinkContainer, _Component4);
+
+	  function GalleryLinkContainer(props) {
+	    _classCallCheck(this, GalleryLinkContainer);
+
+	    var _this5 = _possibleConstructorReturn(this, (GalleryLinkContainer.__proto__ || Object.getPrototypeOf(GalleryLinkContainer)).call(this, props));
+
+	    _this5.state = {
+	      itemsToShow: 10
+	    };
+	    return _this5;
+	  }
+
+	  _createClass(GalleryLinkContainer, [{
+	    key: 'linkColor',
+	    value: function linkColor(index) {
+	      return window.randomColors[index];
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick(gallery) {
+	      this.props.activateGallery(gallery);
+	    }
+	  }, {
+	    key: 'loadMore',
+	    value: function loadMore() {
+	      this.setState({
+	        itemsToShow: this.state.itemsToShow += 5
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this6 = this;
+
+	      var galleryLinks = this.props.galleries.slice(0, this.state.itemsToShow).map(function (gallery, index) {
+	        return _react2.default.createElement(GalleryLink, {
+	          key: gallery[0],
+	          gallery: gallery,
+	          onClick: _this6.handleClick.bind(_this6, gallery),
+	          active: _this6.props.activeGallery !== null && gallery[0] == _this6.props.activeGallery[0],
+	          color: _this6.linkColor(index)
+	        });
+	      });
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        galleryLinks,
+	        this.props.galleries.length > this.state.itemsToShow ? _react2.default.createElement(
+	          'div',
+	          { className: 'show-more', onClick: this.loadMore.bind(this) },
+	          'show more...'
+	        ) : null
+	      );
+	    }
+	  }]);
+
+	  return GalleryLinkContainer;
+	}(_react.Component);
+
+	var GalleryForm = function (_Component5) {
+	  _inherits(GalleryForm, _Component5);
 
 	  function GalleryForm(props) {
 	    _classCallCheck(this, GalleryForm);
 
-	    var _this5 = _possibleConstructorReturn(this, (GalleryForm.__proto__ || Object.getPrototypeOf(GalleryForm)).call(this, props));
+	    var _this7 = _possibleConstructorReturn(this, (GalleryForm.__proto__ || Object.getPrototypeOf(GalleryForm)).call(this, props));
 
-	    _this5.state = {
+	    _this7.state = {
 	      name: '',
 	      password: ''
 	    };
 
-	    _this5.handlePasswordChange = _this5.handlePasswordChange.bind(_this5);
-	    _this5.handleNameChange = _this5.handleNameChange.bind(_this5);
-	    _this5.handleSubmit = _this5.handleSubmit.bind(_this5);
-	    return _this5;
+	    _this7.handlePasswordChange = _this7.handlePasswordChange.bind(_this7);
+	    _this7.handleNameChange = _this7.handleNameChange.bind(_this7);
+	    _this7.handleSubmit = _this7.handleSubmit.bind(_this7);
+	    return _this7;
 	  }
 
 	  _createClass(GalleryForm, [{
@@ -30326,26 +30388,25 @@
 	  return GalleryForm;
 	}(_react.Component);
 
-	var App = function (_Component5) {
-	  _inherits(App, _Component5);
+	var App = function (_Component6) {
+	  _inherits(App, _Component6);
 
 	  function App(props) {
 	    _classCallCheck(this, App);
 
-	    var _this6 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	    var _this8 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-	    _this6.state = {
+	    _this8.state = {
 	      galleries: window.galleries, // first element [0] is name/folder, second [1] contains image paths
 	      activeGallery: null,
 	      uploadFolder: null,
 	      uploading: false
 	    };
-	    _this6.activateGallery = _this6.activateGallery.bind(_this6);
-	    _this6.updateGalleries = _this6.updateGalleries.bind(_this6);
-	    _this6.deleteGallery = _this6.deleteGallery.bind(_this6);
-	    _this6.getGalleries = _this6.getGalleries.bind(_this6);
-	    _this6.linkColor = _this6.linkColor.bind(_this6);
-	    return _this6;
+	    _this8.activateGallery = _this8.activateGallery.bind(_this8);
+	    _this8.updateGalleries = _this8.updateGalleries.bind(_this8);
+	    _this8.deleteGallery = _this8.deleteGallery.bind(_this8);
+	    _this8.getGalleries = _this8.getGalleries.bind(_this8);
+	    return _this8;
 	  }
 
 	  _createClass(App, [{
@@ -30360,15 +30421,10 @@
 	    key: 'updateGalleries',
 	    value: function updateGalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
-	      var latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
+	      var latestChangedGallery = galleries[0]; // last element of array (sorted on server)
 	      if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {
 	        this.setState({ activeGallery: latestChangedGallery });
 	      };
-	    }
-	  }, {
-	    key: 'linkColor',
-	    value: function linkColor(index) {
-	      return window.randomColors[index];
 	    }
 	  }, {
 	    key: 'addItems',
@@ -30432,22 +30488,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this7 = this;
-
-	      var galleryLinks = this.state.galleries.map(function (gallery, index) {
-	        return _react2.default.createElement(GalleryLink, {
-	          key: gallery[0],
-	          gallery: gallery,
-	          onClick: _this7.activateGallery,
-	          active: _this7.state.activeGallery !== null && gallery[0] == _this7.state.activeGallery[0],
-	          color: _this7.linkColor(index)
-	        });
-	      });
-
-	      var gallery = null;
-	      if (this.state.activeGallery != null) {
-	        gallery = _react2.default.createElement(Gallery, { gallery: this.state.activeGallery });
-	      };
+	      var _this9 = this;
 
 	      var dropzoneComponentConfig = {
 	        iconFiletypes: ['.jpg', '.png', '.gif'],
@@ -30465,13 +30506,13 @@
 
 	      var dropzonEventHandlers = {
 	        addedfile: function addedfile() {
-	          return _this7.addItems();
+	          return _this9.addItems();
 	        },
 	        queuecomplete: function queuecomplete() {
-	          return _this7.finishUpload();
+	          return _this9.finishUpload();
 	        },
 	        success: function success() {
-	          return _this7.finishUpload();
+	          return _this9.finishUpload();
 	        }
 	      };
 
@@ -30489,12 +30530,16 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'gallery-link-container' },
-	          galleryLinks
+	          _react2.default.createElement(GalleryLinkContainer, {
+	            activateGallery: this.activateGallery,
+	            galleries: this.state.galleries,
+	            activeGallery: this.state.activeGallery
+	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'gallery-container' },
-	          gallery
+	          this.state.activeGallery != null ? _react2.default.createElement(Gallery, { gallery: this.state.activeGallery }) : null
 	        ),
 	        _react2.default.createElement(
 	          'div',

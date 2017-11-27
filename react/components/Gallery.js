@@ -117,6 +117,52 @@ class GalleryLink extends Component {
 
 
 
+class GalleryLinkContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      itemsToShow: 10
+    }
+  }
+
+  linkColor(index) {
+    return window.randomColors[index];
+  }
+
+  handleClick(gallery) {
+    this.props.activateGallery(gallery);
+  }
+
+  loadMore() {
+    this.setState({
+      itemsToShow: this.state.itemsToShow += 5
+    })
+  }
+
+  render() {
+    const galleryLinks = this.props.galleries.slice(0, this.state.itemsToShow).map((gallery, index) =>
+      <GalleryLink
+        key={gallery[0]}
+        gallery={gallery}
+        onClick={this.handleClick.bind(this, gallery)}
+        active={(this.props.activeGallery !== null) && (gallery[0] == this.props.activeGallery[0])}
+        color={this.linkColor(index)}
+      />
+    );
+
+    return (
+      <div>
+        {galleryLinks}
+        {this.props.galleries.length > this.state.itemsToShow ? (
+          <div className='show-more' onClick={this.loadMore.bind(this)}>show more...</div>
+        ) : null}
+      </div>
+    )
+  }
+}
+
+
+
 class GalleryForm extends Component {
   constructor(props) {
     super(props);
@@ -183,7 +229,6 @@ class App extends Component {
     this.updateGalleries = this.updateGalleries.bind(this);
     this.deleteGallery = this.deleteGallery.bind(this);    
     this.getGalleries = this.getGalleries.bind(this);
-    this.linkColor = this.linkColor.bind(this);
   }
 
   activateGallery(gallery) {
@@ -195,14 +240,10 @@ class App extends Component {
 
   updateGalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
-    const latestChangedGallery = galleries.slice(-1)[0]; // last element of array (sorted on server)
+    const latestChangedGallery = galleries[0]; // last element of array (sorted on server)
     if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {      
       this.setState({ activeGallery: latestChangedGallery });  
     };
-  }
-
-  linkColor(index) {
-    return window.randomColors[index];
   }
 
   addItems() {
@@ -264,21 +305,6 @@ class App extends Component {
   }
 
   render() {
-    const galleryLinks = this.state.galleries.map((gallery, index) =>
-      <GalleryLink
-        key={gallery[0]}
-        gallery={gallery}
-        onClick={this.activateGallery}
-        active={(this.state.activeGallery !== null) && (gallery[0] == this.state.activeGallery[0])}
-        color={this.linkColor(index)}
-      />
-    );
-    
-    let gallery = null;
-    if (this.state.activeGallery != null) {
-      gallery = <Gallery gallery={this.state.activeGallery} />
-    };
-    
     let dropzoneComponentConfig = {
       iconFiletypes: ['.jpg', '.png', '.gif'],
       showFiletypeIcon: true,
@@ -309,11 +335,17 @@ class App extends Component {
         </div>
 
         <div className='gallery-link-container'>
-          {galleryLinks}
+          <GalleryLinkContainer
+            activateGallery={this.activateGallery}
+            galleries={this.state.galleries}
+            activeGallery={this.state.activeGallery}
+          />
         </div>
 
         <div className='gallery-container'>
-          {gallery}
+          {this.state.activeGallery != null ? (
+            <Gallery gallery={this.state.activeGallery} />
+          ) : null}
         </div>
 
         <div className='dropzone-container'>
