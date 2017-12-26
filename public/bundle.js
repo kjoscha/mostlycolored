@@ -33401,8 +33401,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.default = Image;
 
 	var _react = __webpack_require__(3);
 
@@ -33410,41 +33409,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Image = function (_React$Component) {
-	  _inherits(Image, _React$Component);
-
-	  function Image(props) {
-	    _classCallCheck(this, Image);
-
-	    return _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, props));
-	  }
-
-	  _createClass(Image, [{
-	    key: 'handleClick',
-	    value: function handleClick(url) {
-	      this.props.onClick(url);
+	function Image(props) {
+	  return _react2.default.createElement('img', {
+	    src: props.url,
+	    className: props.active ? 'active' : '',
+	    onClick: function onClick() {
+	      return props.onClick(props.index);
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement('img', {
-	        src: this.props.url,
-	        className: this.props.active ? 'active' : '',
-	        onClick: this.handleClick.bind(this, this.props.index)
-	      });
-	    }
-	  }]);
-
-	  return Image;
-	}(_react2.default.Component);
-
-	exports.default = Image;
+	  });
+	}
 
 /***/ }),
 /* 172 */
@@ -33638,8 +33611,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.default = GalleryLink;
 
 	var _react = __webpack_require__(3);
 
@@ -33647,44 +33619,18 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var GalleryLink = function (_React$Component) {
-	  _inherits(GalleryLink, _React$Component);
-
-	  function GalleryLink(props) {
-	    _classCallCheck(this, GalleryLink);
-
-	    return _possibleConstructorReturn(this, (GalleryLink.__proto__ || Object.getPrototypeOf(GalleryLink)).call(this, props));
-	  }
-
-	  _createClass(GalleryLink, [{
-	    key: 'handleClick',
-	    value: function handleClick(gallery) {
-	      this.props.onClick(gallery);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'span',
-	        {
-	          style: { color: this.props.color, border: this.props.active ? '1px solid ' + this.props.color : '1px solid black' },
-	          className: 'gallery-link ' + (this.props.active ? 'active' : ''),
-	          onClick: this.handleClick.bind(this, this.props.gallery) },
-	        this.props.gallery[0]
-	      );
-	    }
-	  }]);
-
-	  return GalleryLink;
-	}(_react2.default.Component);
-
-	exports.default = GalleryLink;
+	function GalleryLink(props) {
+	  return _react2.default.createElement(
+	    'span',
+	    {
+	      style: { color: props.color, border: props.active ? '1px solid ' + props.color : '1px solid black' },
+	      className: 'gallery-link ' + (props.active ? 'active' : ''),
+	      onClick: function onClick() {
+	        return props.onClick(props.gallery);
+	      } },
+	    props.gallery[0]
+	  );
+	}
 
 /***/ })
 /******/ ]);
