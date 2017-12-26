@@ -30093,7 +30093,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Gallery = __webpack_require__(173);
+	var _Gallery = __webpack_require__(170);
 
 	var _Gallery2 = _interopRequireDefault(_Gallery);
 
@@ -30101,7 +30101,7 @@
 
 	var _GalleryForm2 = _interopRequireDefault(_GalleryForm);
 
-	var _GalleryLinkContainer = __webpack_require__(170);
+	var _GalleryLinkContainer = __webpack_require__(173);
 
 	var _GalleryLinkContainer2 = _interopRequireDefault(_GalleryLinkContainer);
 
@@ -33285,9 +33285,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _GalleryLink = __webpack_require__(171);
+	var _Image = __webpack_require__(171);
 
-	var _GalleryLink2 = _interopRequireDefault(_GalleryLink);
+	var _Image2 = _interopRequireDefault(_Image);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33297,35 +33297,54 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var GalleryLinkContainer = function (_React$Component) {
-	  _inherits(GalleryLinkContainer, _React$Component);
+	var Gallery = function (_React$Component) {
+	  _inherits(Gallery, _React$Component);
 
-	  function GalleryLinkContainer(props) {
-	    _classCallCheck(this, GalleryLinkContainer);
+	  function Gallery(props) {
+	    _classCallCheck(this, Gallery);
 
-	    var _this = _possibleConstructorReturn(this, (GalleryLinkContainer.__proto__ || Object.getPrototypeOf(GalleryLinkContainer)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Gallery.__proto__ || Object.getPrototypeOf(Gallery)).call(this, props));
 
 	    _this.state = {
-	      itemsToShow: 20
+	      activeImageIndex: null
 	    };
+	    _this.activateImage = _this.activateImage.bind(_this);
+	    _this.download = _this.download.bind(_this);
 	    return _this;
 	  }
 
-	  _createClass(GalleryLinkContainer, [{
-	    key: 'linkColor',
-	    value: function linkColor(index) {
-	      return window.randomColors[index];
+	  // to reset state after images have updated
+	  // this is a built-in function of React
+
+
+	  _createClass(Gallery, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps() {
+	      this.setState({ activeImageIndex: null });
 	    }
 	  }, {
-	    key: 'handleClick',
-	    value: function handleClick(gallery) {
-	      this.props.activateGallery(gallery);
+	    key: 'activateImage',
+	    value: function activateImage(index) {
+	      var newIndex = this.state.activeImageIndex == index ? null : index;
+	      this.setState({ activeImageIndex: newIndex });
 	    }
 	  }, {
-	    key: 'loadMore',
-	    value: function loadMore() {
-	      this.setState({
-	        itemsToShow: this.state.itemsToShow += 20
+	    key: 'download',
+	    value: function download() {
+	      var thisComponent = this;
+	      jQuery('.download-link').text('Creating the zip file. Please wait...');
+	      jQuery.ajax({
+	        url: 'zip',
+	        data: { folder: thisComponent.props.gallery[3] },
+	        method: 'GET',
+	        success: function success(data) {
+	          jQuery('.download-link').text('Download all images as zip >>>');
+	          window.location = data;
+	        },
+	        error: function error(data) {
+	          jQuery('.download-link').text('Download all images as zip >>>');
+	          console.log('Error!');
+	        }
 	      });
 	    }
 	  }, {
@@ -33333,33 +33352,45 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      var galleryLinks = this.props.galleries.slice(0, this.state.itemsToShow).map(function (gallery, index) {
-	        return _react2.default.createElement(_GalleryLink2.default, {
-	          key: gallery[0],
-	          gallery: gallery,
-	          onClick: _this2.handleClick.bind(_this2, gallery),
-	          active: _this2.props.activeGallery !== null && gallery[0] == _this2.props.activeGallery[0],
-	          color: _this2.linkColor(index)
+	      var images = this.props.gallery[1].map(function (image, index) {
+	        return _react2.default.createElement(_Image2.default, {
+	          key: index, url: _this2.state.activeImageIndex == index ? image[0] : image[1],
+	          index: index,
+	          active: index == _this2.state.activeImageIndex,
+	          onClick: _this2.activateImage
 	        });
 	      });
+
+	      var downloadLink = images.length > 0 ? _react2.default.createElement(
+	        'a',
+	        { className: 'download-link', onClick: this.download },
+	        'Download all images as zip >>>'
+	      ) : null;
+
+	      var metaInfo = 'Latest update on ' + this.props.gallery[2].substring(0, 10) + ' | ' + this.props.gallery[1].length + ' images';
 
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        galleryLinks,
-	        this.props.galleries.length > this.state.itemsToShow ? _react2.default.createElement(
+	        _react2.default.createElement(
 	          'div',
-	          { className: 'show-more', onClick: this.loadMore.bind(this) },
-	          'show more...'
-	        ) : null
+	          { className: 'gallery' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'edited-at' },
+	            metaInfo
+	          ),
+	          images
+	        ),
+	        downloadLink
 	      );
 	    }
 	  }]);
 
-	  return GalleryLinkContainer;
+	  return Gallery;
 	}(_react2.default.Component);
 
-	exports.default = GalleryLinkContainer;
+	exports.default = Gallery;
 
 /***/ }),
 /* 171 */
@@ -33385,46 +33416,35 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var GalleryLink = function (_React$Component) {
-	  _inherits(GalleryLink, _React$Component);
+	var Image = function (_React$Component) {
+	  _inherits(Image, _React$Component);
 
-	  function GalleryLink(props) {
-	    _classCallCheck(this, GalleryLink);
+	  function Image(props) {
+	    _classCallCheck(this, Image);
 
-	    return _possibleConstructorReturn(this, (GalleryLink.__proto__ || Object.getPrototypeOf(GalleryLink)).call(this, props));
+	    return _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, props));
 	  }
 
-	  _createClass(GalleryLink, [{
+	  _createClass(Image, [{
 	    key: 'handleClick',
-	    value: function handleClick(gallery) {
-	      this.props.onClick(gallery);
+	    value: function handleClick(url) {
+	      this.props.onClick(url);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      if (this.props.gallery[1] == 'locked') {
-	        return _react2.default.createElement(
-	          'span',
-	          { className: 'gallery-link locked' },
-	          this.props.gallery[0]
-	        );
-	      } else {
-	        return _react2.default.createElement(
-	          'span',
-	          {
-	            style: { color: this.props.color, border: this.props.active ? '1px solid ' + this.props.color : '1px solid black' },
-	            className: 'gallery-link ' + (this.props.active ? 'active' : ''),
-	            onClick: this.handleClick.bind(this, this.props.gallery) },
-	          this.props.gallery[0]
-	        );
-	      };
+	      return _react2.default.createElement('img', {
+	        src: this.props.url,
+	        className: this.props.active ? 'active' : '',
+	        onClick: this.handleClick.bind(this, this.props.index)
+	      });
 	    }
 	  }]);
 
-	  return GalleryLink;
+	  return Image;
 	}(_react2.default.Component);
 
-	exports.default = GalleryLink;
+	exports.default = Image;
 
 /***/ }),
 /* 172 */
@@ -33533,9 +33553,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Image = __webpack_require__(174);
+	var _GalleryLink = __webpack_require__(174);
 
-	var _Image2 = _interopRequireDefault(_Image);
+	var _GalleryLink2 = _interopRequireDefault(_GalleryLink);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33545,54 +33565,35 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Gallery = function (_React$Component) {
-	  _inherits(Gallery, _React$Component);
+	var GalleryLinkContainer = function (_React$Component) {
+	  _inherits(GalleryLinkContainer, _React$Component);
 
-	  function Gallery(props) {
-	    _classCallCheck(this, Gallery);
+	  function GalleryLinkContainer(props) {
+	    _classCallCheck(this, GalleryLinkContainer);
 
-	    var _this = _possibleConstructorReturn(this, (Gallery.__proto__ || Object.getPrototypeOf(Gallery)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (GalleryLinkContainer.__proto__ || Object.getPrototypeOf(GalleryLinkContainer)).call(this, props));
 
 	    _this.state = {
-	      activeImageIndex: null
+	      itemsToShow: 20
 	    };
-	    _this.activateImage = _this.activateImage.bind(_this);
-	    _this.download = _this.download.bind(_this);
 	    return _this;
 	  }
 
-	  // to reset state after images have updated
-	  // this is a built-in function of React
-
-
-	  _createClass(Gallery, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps() {
-	      this.setState({ activeImageIndex: null });
+	  _createClass(GalleryLinkContainer, [{
+	    key: 'linkColor',
+	    value: function linkColor(index) {
+	      return window.randomColors[index];
 	    }
 	  }, {
-	    key: 'activateImage',
-	    value: function activateImage(index) {
-	      var newIndex = this.state.activeImageIndex == index ? null : index;
-	      this.setState({ activeImageIndex: newIndex });
+	    key: 'handleClick',
+	    value: function handleClick(gallery) {
+	      this.props.activateGallery(gallery);
 	    }
 	  }, {
-	    key: 'download',
-	    value: function download() {
-	      var thisComponent = this;
-	      jQuery('.download-link').text('Creating the zip file. Please wait...');
-	      jQuery.ajax({
-	        url: 'zip',
-	        data: { folder: thisComponent.props.gallery[3] },
-	        method: 'GET',
-	        success: function success(data) {
-	          jQuery('.download-link').text('Download all images as zip >>>');
-	          window.location = data;
-	        },
-	        error: function error(data) {
-	          jQuery('.download-link').text('Download all images as zip >>>');
-	          console.log('Error!');
-	        }
+	    key: 'loadMore',
+	    value: function loadMore() {
+	      this.setState({
+	        itemsToShow: this.state.itemsToShow += 20
 	      });
 	    }
 	  }, {
@@ -33600,45 +33601,33 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      var images = this.props.gallery[1].map(function (image, index) {
-	        return _react2.default.createElement(_Image2.default, {
-	          key: index, url: _this2.state.activeImageIndex == index ? image[0] : image[1],
-	          index: index,
-	          active: index == _this2.state.activeImageIndex,
-	          onClick: _this2.activateImage
+	      var galleryLinks = this.props.galleries.slice(0, this.state.itemsToShow).map(function (gallery, index) {
+	        return _react2.default.createElement(_GalleryLink2.default, {
+	          key: gallery[0],
+	          gallery: gallery,
+	          onClick: _this2.handleClick.bind(_this2, gallery),
+	          active: _this2.props.activeGallery !== null && gallery[0] == _this2.props.activeGallery[0],
+	          color: _this2.linkColor(index)
 	        });
 	      });
-
-	      var downloadLink = images.length > 0 ? _react2.default.createElement(
-	        'a',
-	        { className: 'download-link', onClick: this.download },
-	        'Download all images as zip >>>'
-	      ) : null;
-
-	      var metaInfo = 'Latest update on ' + this.props.gallery[2].substring(0, 10) + ' | ' + this.props.gallery[1].length + ' images';
 
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(
+	        galleryLinks,
+	        this.props.galleries.length > this.state.itemsToShow ? _react2.default.createElement(
 	          'div',
-	          { className: 'gallery' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'edited-at' },
-	            metaInfo
-	          ),
-	          images
-	        ),
-	        downloadLink
+	          { className: 'show-more', onClick: this.loadMore.bind(this) },
+	          'show more...'
+	        ) : null
 	      );
 	    }
 	  }]);
 
-	  return Gallery;
+	  return GalleryLinkContainer;
 	}(_react2.default.Component);
 
-	exports.default = Gallery;
+	exports.default = GalleryLinkContainer;
 
 /***/ }),
 /* 174 */
@@ -33664,35 +33653,38 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Image = function (_React$Component) {
-	  _inherits(Image, _React$Component);
+	var GalleryLink = function (_React$Component) {
+	  _inherits(GalleryLink, _React$Component);
 
-	  function Image(props) {
-	    _classCallCheck(this, Image);
+	  function GalleryLink(props) {
+	    _classCallCheck(this, GalleryLink);
 
-	    return _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, props));
+	    return _possibleConstructorReturn(this, (GalleryLink.__proto__ || Object.getPrototypeOf(GalleryLink)).call(this, props));
 	  }
 
-	  _createClass(Image, [{
+	  _createClass(GalleryLink, [{
 	    key: 'handleClick',
-	    value: function handleClick(url) {
-	      this.props.onClick(url);
+	    value: function handleClick(gallery) {
+	      this.props.onClick(gallery);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement('img', {
-	        src: this.props.url,
-	        className: this.props.active ? 'active' : '',
-	        onClick: this.handleClick.bind(this, this.props.index)
-	      });
+	      return _react2.default.createElement(
+	        'span',
+	        {
+	          style: { color: this.props.color, border: this.props.active ? '1px solid ' + this.props.color : '1px solid black' },
+	          className: 'gallery-link ' + (this.props.active ? 'active' : ''),
+	          onClick: this.handleClick.bind(this, this.props.gallery) },
+	        this.props.gallery[0]
+	      );
 	    }
 	  }]);
 
-	  return Image;
+	  return GalleryLink;
 	}(_react2.default.Component);
 
-	exports.default = Image;
+	exports.default = GalleryLink;
 
 /***/ })
 /******/ ]);

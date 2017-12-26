@@ -10,11 +10,11 @@ require_relative 'lib/user'
 
 class App < Sinatra::Base
   use Rack::Session::Pool, expire_after: 30 * 60 # Expire sessions after 30 minutes of inactivity
-  helpers Authentication  
+  helpers Authentication
 
   before do
     pass if %w[login].include? request.path_info.split('/')[1]
-    authenticate!  
+    authenticate!
   end
 
   get '/login' do
@@ -84,7 +84,7 @@ class App < Sinatra::Base
     images = Dir.glob("#{dir}/*").map do |image|
       image unless image.include?('thumbnails')
     end.compact
-    
+
     Zip::File.open(zipfile, Zip::File::CREATE) do |zipfile|
       images.each do |image|
         zipfile.add(File.basename(image), image)
@@ -104,7 +104,7 @@ class App < Sinatra::Base
   def make_dir_if_not_exists(folder)
     unless Dir.exist?("./public/images/#{folder}")
       Dir.mkdir("./public/images/#{folder}")
-      Dir.mkdir("./public/images/#{folder}/thumbnails")    
+      Dir.mkdir("./public/images/#{folder}/thumbnails")
     end
   end
 
@@ -115,7 +115,7 @@ class App < Sinatra::Base
 
   def save_and_resize(folder, file, filename, px)
     path = "./public/images/#{folder}/#{filename}"
-    
+
     unless File.file?(path)
       File.open(path, 'wb') { |f| f.write(file.read) }
 
@@ -133,13 +133,10 @@ class App < Sinatra::Base
   def galleries(password = '')
     Dir['public/images/*'].map do |dir|
       next if File.file?(dir)
-      folder = dir.gsub('public/images/', '')
-      if visible?(dir, password)
-        images = images_in(dir)
-      else
-        images = 'locked'
-      end
+      next unless visible?(dir, password)
 
+      folder = dir.gsub('public/images/', '')
+      images = images_in(dir)
       name = folder.split('___')[0]
       last_changed_at = File.ctime(dir).to_s
       [name, images, last_changed_at, folder]
@@ -171,10 +168,10 @@ class App < Sinatra::Base
   def clean_zips(seconds)
     Dir.glob('public/images/*.zip').each do |f|
       File.delete(f) if file_age(f) > seconds
-    end  
+    end
   end
 
-  def disk_space    
+  def disk_space
     stat = Sys::Filesystem.stat('/')
     gigabytes = (
       stat.block_size.to_f * stat.blocks_available /
