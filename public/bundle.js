@@ -30081,17 +30081,13 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	__webpack_require__(162);
-
-	__webpack_require__(167);
-
-	var _reactDropzoneComponent = __webpack_require__(169);
-
-	var _reactDropzoneComponent2 = _interopRequireDefault(_reactDropzoneComponent);
-
 	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _Dropzone = __webpack_require__(175);
+
+	var _Dropzone2 = _interopRequireDefault(_Dropzone);
 
 	var _Gallery = __webpack_require__(170);
 
@@ -30123,9 +30119,7 @@
 
 	    _this.state = {
 	      galleries: window.galleries, // first element [0] is name/folder, second [1] contains image paths
-	      activeGallery: null,
-	      uploadFolder: null,
-	      uploading: false
+	      activeGallery: null
 	    };
 	    _this.activateGallery = _this.activateGallery.bind(_this);
 	    _this.updateGalleries = _this.updateGalleries.bind(_this);
@@ -30150,29 +30144,6 @@
 	      if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {
 	        this.setState({ activeGallery: latestChangedGallery });
 	      };
-	    }
-	  }, {
-	    key: 'addItems',
-	    value: function addItems() {
-	      // set upload folder to current gallery if this drop starts a new queue.
-	      // otherwise keep the folder which was set at queue start
-	      if (!this.state.uploading) {
-	        this.setState({ uploadFolder: this.state.activeGallery ? this.state.activeGallery[3] : 'New_' + Math.random().toString(36).substring(7)
-	        });
-	      };
-	      this.setState({ uploading: true });
-	    }
-	  }, {
-	    key: 'finishUpload',
-	    value: function finishUpload() {
-	      this.setState({ uploading: false });
-	      // hack to get password without too much cross-component bindings
-	      var password = jQuery('input[name=password]').val();
-	      // timeout to avoid empty thumbnail for latest uploaded image
-	      var thisComponent = this;
-	      setTimeout(function () {
-	        thisComponent.getGalleries(password, true);
-	      }, 1000);
 	    }
 	  }, {
 	    key: 'getGalleries',
@@ -30213,34 +30184,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
-	      var dropzoneComponentConfig = {
-	        iconFiletypes: ['.jpg', '.png', '.gif'],
-	        showFiletypeIcon: true,
-	        postUrl: '/save_image'
-	      };
-
-	      var djsConfig = {
-	        params: {
-	          folder: this.state.uploadFolder
-	        },
-	        thumbnailHeight: '80',
-	        thumbnailWidth: '80'
-	      };
-
-	      var dropzonEventHandlers = {
-	        addedfile: function addedfile() {
-	          return _this2.addItems();
-	        },
-	        queuecomplete: function queuecomplete() {
-	          return _this2.finishUpload();
-	        },
-	        success: function success() {
-	          return _this2.finishUpload();
-	        }
-	      };
-
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -30269,18 +30212,10 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'dropzone-container' },
-	          _react2.default.createElement(
-	            _reactDropzoneComponent2.default,
-	            {
-	              config: dropzoneComponentConfig,
-	              djsConfig: djsConfig,
-	              eventHandlers: dropzonEventHandlers },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'dz-message' },
-	              'Drop some files here or click to select some. Files will be saved in the current gallery, thus feel free to create a new one with the input field on the top....'
-	            )
-	          )
+	          _react2.default.createElement(_Dropzone2.default, {
+	            activeGallery: this.state.activeGallery,
+	            getGalleries: this.getGalleries
+	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -33631,6 +33566,127 @@
 	    props.gallery[0]
 	  );
 	}
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	__webpack_require__(162);
+
+	__webpack_require__(167);
+
+	var _reactDropzoneComponent = __webpack_require__(169);
+
+	var _reactDropzoneComponent2 = _interopRequireDefault(_reactDropzoneComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Dropzone = function (_React$Component) {
+	  _inherits(Dropzone, _React$Component);
+
+	  function Dropzone(props) {
+	    _classCallCheck(this, Dropzone);
+
+	    var _this = _possibleConstructorReturn(this, (Dropzone.__proto__ || Object.getPrototypeOf(Dropzone)).call(this, props));
+
+	    _this.state = {
+	      uploadFolder: null,
+	      uploading: false
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Dropzone, [{
+	    key: 'addItems',
+	    value: function addItems() {
+	      // set upload folder to current gallery if this drop starts a new queue.
+	      // otherwise keep the folder which was set at queue start
+	      if (!this.state.uploading) {
+	        this.setState({ uploadFolder: this.props.activeGallery ? this.props.activeGallery[3] : 'New_' + Math.random().toString(36).substring(7)
+	        });
+	      };
+	      this.setState({ uploading: true });
+	    }
+	  }, {
+	    key: 'finishUpload',
+	    value: function finishUpload() {
+	      this.setState({ uploading: false });
+	      // hack to get password without too much cross-component bindings
+	      var password = jQuery('input[name=password]').val();
+	      // timeout to avoid empty thumbnail for latest uploaded image
+	      var thisComponent = this;
+	      setTimeout(function () {
+	        thisComponent.props.getGalleries(password, true);
+	      }, 1000);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var dropzoneComponentConfig = {
+	        iconFiletypes: ['.jpg', '.png', '.gif'],
+	        showFiletypeIcon: true,
+	        postUrl: '/save_image'
+	      };
+
+	      var djsConfig = {
+	        params: {
+	          folder: this.state.uploadFolder
+	        },
+	        thumbnailHeight: '80',
+	        thumbnailWidth: '80'
+	      };
+
+	      var dropzonEventHandlers = {
+	        addedfile: function addedfile() {
+	          return _this2.addItems();
+	        },
+	        queuecomplete: function queuecomplete() {
+	          return _this2.finishUpload();
+	        },
+	        success: function success() {
+	          return _this2.finishUpload();
+	        }
+	      };
+
+	      return _react2.default.createElement(
+	        _reactDropzoneComponent2.default,
+	        {
+	          config: dropzoneComponentConfig,
+	          djsConfig: djsConfig,
+	          eventHandlers: dropzonEventHandlers },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'dz-message' },
+	          'Drop some files here or click to select some. Files will be saved in the current gallery, thus feel free to create a new one with the input field on the top....'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Dropzone;
+	}(_react2.default.Component);
+
+	exports.default = Dropzone;
 
 /***/ })
 /******/ ]);
