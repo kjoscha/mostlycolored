@@ -30141,7 +30141,9 @@
 	    value: function updateGalleries(galleries, changeToLatest) {
 	      this.setState({ galleries: galleries });
 	      var latestChangedGallery = galleries[0]; // last element of array (sorted on server)
-	      if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {
+	      console.log(changeToLatest);
+	      console.log(latestChangedGallery);
+	      if (changeToLatest && latestChangedGallery) {
 	        this.setState({ activeGallery: latestChangedGallery });
 	      };
 	    }
@@ -30184,6 +30186,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var deleteButton = window.user == 'Admin' ? _react2.default.createElement(
+	        'div',
+	        { id: 'delete-gallery', onClick: this.deleteGallery },
+	        ' delete gallery '
+	      ) : null;
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -30207,7 +30215,12 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'gallery-container' },
-	          this.state.activeGallery != null ? _react2.default.createElement(_Gallery2.default, { gallery: this.state.activeGallery }) : null
+	          this.state.activeGallery != null ? _react2.default.createElement(
+	            'div',
+	            null,
+	            deleteButton,
+	            _react2.default.createElement(_Gallery2.default, { gallery: this.state.activeGallery })
+	          ) : null
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -30221,8 +30234,7 @@
 	          'div',
 	          { id: 'disk-space' },
 	          'Still ' + window.diskSpace + ' gigabytes free space.'
-	        ),
-	        _react2.default.createElement('div', { id: 'hdndlt', onClick: this.deleteGallery })
+	        )
 	      );
 	    }
 	  }]);

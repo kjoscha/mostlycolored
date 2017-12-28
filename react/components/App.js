@@ -27,7 +27,9 @@ class App extends React.Component {
   updateGalleries(galleries, changeToLatest) {
     this.setState({ galleries: galleries });
     const latestChangedGallery = galleries[0]; // last element of array (sorted on server)
-    if (changeToLatest && latestChangedGallery && latestChangedGallery[1] != 'locked') {
+    console.log(changeToLatest);
+    console.log(latestChangedGallery);
+    if (changeToLatest && latestChangedGallery) {
       this.setState({ activeGallery: latestChangedGallery });
     };
   }
@@ -67,6 +69,10 @@ class App extends React.Component {
   }
 
   render() {
+    let deleteButton = window.user == 'Admin' ? (
+      <div id='delete-gallery' onClick={this.deleteGallery}> delete gallery </div>
+    ) : null;
+
     return(
       <div>
         <div className='form-container'>
@@ -86,7 +92,10 @@ class App extends React.Component {
 
         <div className='gallery-container'>
           {this.state.activeGallery != null ? (
-            <Gallery gallery={this.state.activeGallery} />
+            <div>
+              {deleteButton}
+              <Gallery gallery={this.state.activeGallery} />
+            </div>
           ) : null}
         </div>
 
@@ -97,8 +106,9 @@ class App extends React.Component {
           />
         </div>
 
-        <div id='disk-space'>{'Still ' + window.diskSpace + ' gigabytes free space.'}</div>
-        <div id='hdndlt' onClick={this.deleteGallery}></div>
+        <div id='disk-space'>
+          {'Still ' + window.diskSpace + ' gigabytes free space.'}
+        </div>
       </div>
     )
   }

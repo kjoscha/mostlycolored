@@ -38,7 +38,7 @@ input {
   color: gray;
   width: 170px;
   text-align: center;
-  height: 30px;  
+  height: 30px;
 }
 
 .form-container input[type=submit] {
@@ -46,13 +46,14 @@ input {
 }
 
 /* hidden delete button */
-#hdndlt {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 3px;
-  height: 3px;
-  background: darkslategray;
+#delete-gallery {
+  font-size: 10px;
+  color: red;
+  border: 1px solid red;
+  float: right;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 #disk-space {
@@ -62,7 +63,7 @@ input {
 }
 
 #header {
-  text-align: center;  
+  text-align: center;
 }
 
 #header span {
@@ -102,7 +103,7 @@ input {
 
 .form-container {
   padding: 20px;
-  text-align: center;  
+  text-align: center;
 }
 
 .gallery-link-container {
@@ -111,15 +112,15 @@ input {
 }
 
 .gallery-link {
-  border: 1px solid black;  
+  border: 1px solid black;
   float: left;
   padding: 8px 15px;
   cursor: pointer;
-  border-radius: 4px; 
+  border-radius: 4px;
 }
 
 .gallery-link.locked {
-  cursor: default;  
+  cursor: default;
   color: #494949; /* very dark grey */
 }
 
@@ -152,6 +153,7 @@ input {
   clear: both;
   padding-left: 20px;
   padding-right: 20px;
+  padding-bottom: 20px;
 }
 
 .edited-at {
@@ -179,7 +181,7 @@ input {
 
 .gallery > img:hover {
   -webkit-transform: scale(0.95);
-  -mos-transform: scale(0.95);  
+  -mos-transform: scale(0.95);
   -ms-transform: scale(0.95);
   transform: scale(0.95);
 }
