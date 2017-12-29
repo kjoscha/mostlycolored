@@ -49,9 +49,13 @@ export default class GalleryForm extends React.Component {
   render() {
     return(
       <form className='gallery-creator' onSubmit={this.handleSubmit}>
-        <input type="text" name="name" placeholder="Name" onChange={this.handleNameChange.bind(this)} />
-        <input type="text" name="password" placeholder="Password" onChange={this.handlePasswordChange.bind(this)} />
-        <input type="submit" value="Create gallery" />
+        <div>
+          <input type="text" name="password" placeholder="Password" onChange={this.handlePasswordChange.bind(this)} />
+        </div>
+        <div>
+          <input type="text" name="name" placeholder="Name" onChange={this.handleNameChange.bind(this)} />
+          <input type="submit" value="Create gallery" />
+        </div>
       </form>
     )
   }

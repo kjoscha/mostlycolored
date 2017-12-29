@@ -41,11 +41,20 @@ input {
   height: 30px;
 }
 
+input[name=password] {
+  height: 40px;
+  font-size: 20px;
+  width: 350px;
+  max-width: 100%;
+  clear: both;
+}
+
+
+
 .form-container input[type=submit] {
   height: 33px;
 }
 
-/* hidden delete button */
 #delete-gallery {
   font-size: 10px;
   color: red;

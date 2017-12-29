@@ -33461,9 +33461,17 @@
 	      return _react2.default.createElement(
 	        'form',
 	        { className: 'gallery-creator', onSubmit: this.handleSubmit },
-	        _react2.default.createElement('input', { type: 'text', name: 'name', placeholder: 'Name', onChange: this.handleNameChange.bind(this) }),
-	        _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password', onChange: this.handlePasswordChange.bind(this) }),
-	        _react2.default.createElement('input', { type: 'submit', value: 'Create gallery' })
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password', onChange: this.handlePasswordChange.bind(this) })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement('input', { type: 'text', name: 'name', placeholder: 'Name', onChange: this.handleNameChange.bind(this) }),
+	          _react2.default.createElement('input', { type: 'submit', value: 'Create gallery' })
+	        )
 	      );
 	    }
 	  }]);
