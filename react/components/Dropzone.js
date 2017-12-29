@@ -32,7 +32,10 @@ export default class Dropzone extends React.Component {
     // timeout to avoid empty thumbnail for latest uploaded image
     var thisComponent = this;
     setTimeout(function() {
-      thisComponent.props.getGalleries(password, true)
+      thisComponent.props.getGalleries({
+        password: password,
+        changeToLatest: true,
+      })
     }, 1000);
   }
 

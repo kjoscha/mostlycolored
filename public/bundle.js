@@ -30138,18 +30138,22 @@
 	    }
 	  }, {
 	    key: 'updateGalleries',
-	    value: function updateGalleries(galleries, changeToLatest) {
+	    value: function updateGalleries(_ref) {
+	      var galleries = _ref.galleries,
+	          changeToLatest = _ref.changeToLatest;
+
 	      this.setState({ galleries: galleries });
 	      var latestChangedGallery = galleries[0]; // last element of array (sorted on server)
-	      console.log(changeToLatest);
-	      console.log(latestChangedGallery);
 	      if (changeToLatest && latestChangedGallery) {
 	        this.setState({ activeGallery: latestChangedGallery });
 	      };
 	    }
 	  }, {
 	    key: 'getGalleries',
-	    value: function getGalleries(password, changeToLatest) {
+	    value: function getGalleries(_ref2) {
+	      var password = _ref2.password,
+	          changeToLatest = _ref2.changeToLatest;
+
 	      var thisComponent = this;
 	      jQuery.ajax({
 	        url: 'get_galleries',
@@ -30157,7 +30161,10 @@
 	        dataType: 'json',
 	        method: 'GET',
 	        success: function success(data) {
-	          thisComponent.updateGalleries(data, changeToLatest);
+	          thisComponent.updateGalleries({
+	            galleries: data,
+	            changeToLatest: changeToLatest
+	          });
 	        },
 	        error: function error() {
 	          console.log('ERROR!');
@@ -30175,7 +30182,10 @@
 	          data: { folder: gallery[3] },
 	          method: 'POST',
 	          success: function success() {
-	            thisComponent.getGalleries(jQuery('input[name=password]').val(), true);
+	            thisComponent.getGalleries({
+	              password: jQuery('input[name=password]').val(),
+	              changeToLatest: true
+	            });
 	          },
 	          error: function error() {
 	            console.log('ERROR!');
@@ -33418,7 +33428,10 @@
 	    key: 'handlePasswordChange',
 	    value: function handlePasswordChange(e) {
 	      this.setState({ password: e.target.value });
-	      this.props.getGalleries(e.target.value, false);
+	      this.props.getGalleries({
+	        password: e.target.value,
+	        changeToLatest: false
+	      });
 	    }
 	  }, {
 	    key: 'handleSubmit',
@@ -33432,7 +33445,10 @@
 	        dataType: 'json',
 	        method: 'POST',
 	        success: function success(data) {
-	          thisComponent.props.updateGalleries(data, true);
+	          thisComponent.props.updateGalleries({
+	            galleries: data,
+	            changeToLatest: true
+	          });
 	        },
 	        error: function error(data) {
 	          console.log('ERROR! ' + data);
@@ -33646,7 +33662,10 @@
 	      // timeout to avoid empty thumbnail for latest uploaded image
 	      var thisComponent = this;
 	      setTimeout(function () {
-	        thisComponent.props.getGalleries(password, true);
+	        thisComponent.props.getGalleries({
+	          password: password,
+	          changeToLatest: true
+	        });
 	      }, 1000);
 	    }
 	  }, {

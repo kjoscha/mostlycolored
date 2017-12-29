@@ -19,7 +19,10 @@ export default class GalleryForm extends React.Component {
 
   handlePasswordChange(e) {
     this.setState({ password: e.target.value });
-    this.props.getGalleries(e.target.value, false);
+    this.props.getGalleries({
+      password: e.target.value,
+      changeToLatest: false,
+    });
   }
 
   handleSubmit(e) {
@@ -32,7 +35,10 @@ export default class GalleryForm extends React.Component {
       dataType: 'json',
       method: 'POST',
       success: function(data) {
-        thisComponent.props.updateGalleries(data, true)
+        thisComponent.props.updateGalleries({
+          galleries: data,
+          changeToLatest: true
+        })
       },
       error: function(data) {
         console.log('ERROR! ' + data);

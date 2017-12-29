@@ -24,17 +24,15 @@ class App extends React.Component {
     jQuery('input[name=password]').val(password);
   }
 
-  updateGalleries(galleries, changeToLatest) {
+  updateGalleries({galleries, changeToLatest}) {
     this.setState({ galleries: galleries });
     const latestChangedGallery = galleries[0]; // last element of array (sorted on server)
-    console.log(changeToLatest);
-    console.log(latestChangedGallery);
     if (changeToLatest && latestChangedGallery) {
       this.setState({ activeGallery: latestChangedGallery });
     };
   }
 
-  getGalleries(password, changeToLatest) {
+  getGalleries({password, changeToLatest}) {
     var thisComponent = this;
     jQuery.ajax({
       url: 'get_galleries',
@@ -42,7 +40,10 @@ class App extends React.Component {
       dataType: 'json',
       method: 'GET',
       success: function(data) {
-        thisComponent.updateGalleries(data, changeToLatest);
+        thisComponent.updateGalleries({
+          galleries: data,
+          changeToLatest: changeToLatest,
+        });
       },
       error: function() {
         console.log('ERROR!');
@@ -59,7 +60,10 @@ class App extends React.Component {
         data: { folder: gallery[3] },
         method: 'POST',
         success: function() {
-          thisComponent.getGalleries(jQuery('input[name=password]').val(), true);
+          thisComponent.getGalleries({
+            password: jQuery('input[name=password]').val(),
+            changeToLatest: true,
+          });
         },
         error: function() {
           console.log('ERROR!');
