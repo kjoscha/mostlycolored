@@ -31,6 +31,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
+    log("#{request.ip} visited on #{Time.now}\n")
     clean_zips(3 * 60 * 60) # remove all zip files older than 3 hours
     @disk_space = disk_space
     @galleries = galleries
@@ -75,6 +76,8 @@ class App < Sinatra::Base
   end
 
   get '/zip' do
+    log("#{request.ip} downloaded #{params[:folder]} on #{Time.now}\n")
+
     dir = "./public/images/#{params[:folder]}"
     folder_without_pw = params[:folder].split('___')[0]
     timestamp_suffix = Time.now.strftime('%Y%m%d%H%M%S')
@@ -96,6 +99,12 @@ class App < Sinatra::Base
   end
 
   private
+
+  def log(text)
+    File.open('public/access.log', 'a') do |file|
+      file << text
+    end
+  end
 
   def admin?
     session[:user].name == 'Admin'
