@@ -4,3 +4,4 @@ node_modules
 stderr
 stdout
 public/images/*
+public/access.log
