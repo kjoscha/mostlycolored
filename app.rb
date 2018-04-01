@@ -13,8 +13,12 @@ class App < Sinatra::Base
   helpers Authentication
 
   before do
-    pass if %w[login].include? request.path_info.split('/')[1]
+    pass if %w[login datenschutz].include? request.path_info.split('/')[1]
     authenticate!
+  end
+
+  get '/datenschutz' do
+    haml :datenschutz, layout: nil
   end
 
   get '/login' do
